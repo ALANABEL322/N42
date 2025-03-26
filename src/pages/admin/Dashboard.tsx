@@ -7,7 +7,7 @@ export default function AdminDashboard() {
   const navigate = useNavigate()
 
   const handleGenerateReport = () => {
-    navigate('/admin/generarreporte')
+    navigate('/admin/reports')
   }
   return (
     <div className="min-h-screen bg-gray-100 mt-10">

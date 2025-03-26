@@ -23,64 +23,59 @@ const AUTH_KEY = "authData"
 const REMEMBERED_USER_KEY = "rememberedUser"
 const AUTH_CHANGE_EVENT = "auth-change"
 
-class StorageManager {
-  private static instance: StorageManager
-  private constructor() {}
-
-  static getInstance(): StorageManager {
-    if (!StorageManager.instance) {
-      StorageManager.instance = new StorageManager()
-    }
-    return StorageManager.instance
-  }
-
-  private getStorage(): Storage | null {
-    return typeof window !== "undefined" ? localStorage : null
-  }
-
+const storageManager = {
   getItem(key: string): string | null {
-    const storage = this.getStorage()
-    return storage ? storage.getItem(key) : null
-  }
+    if (typeof window === "undefined") return null
+    return localStorage.getItem(key)
+  },
 
   setItem(key: string, value: string): void {
-    const storage = this.getStorage()
-    if (storage) {
-      storage.setItem(key, value)
-    }
-  }
+    if (typeof window === "undefined") return
+    localStorage.setItem(key, value)
+  },
 
   removeItem(key: string): void {
-    const storage = this.getStorage()
-    if (storage) {
-      storage.removeItem(key)
-    }
-  }
+    if (typeof window === "undefined") return
+    localStorage.removeItem(key)
+  },
 
   saveUser(user: User): void {
-    const storage = this.getStorage()
-    if (storage) {
-      storage.setItem(AUTH_KEY, JSON.stringify({ isAuthenticated: true, user, error: undefined }))
-    }
+    if (typeof window === "undefined") return
+    localStorage.setItem(AUTH_KEY, JSON.stringify({ isAuthenticated: true, user, error: undefined }))
+  },
+
+  clearAllUserData(): void {
+    if (typeof window === "undefined") return
+    localStorage.removeItem(AUTH_KEY)
+    localStorage.removeItem(REMEMBERED_USER_KEY)
+    const keysToRemove = [
+      'sessionToken',
+      'userSession',
+      'authToken',
+      'userProfile',
+      'sessionData'
+    ]
+    keysToRemove.forEach(key => localStorage.removeItem(key))
   }
 }
 
 class AuthService {
   private state: AuthState
   private listeners: ((state: AuthState) => void)[] = []
-  private storage: StorageManager
 
   constructor() {
-    this.storage = StorageManager.getInstance()
     this.state = this.loadInitialState()
     this.setupWindowListener()
   }
 
   private loadInitialState(): AuthState {
     try {
-      const savedAuth = this.storage.getItem(AUTH_KEY)
+      const savedAuth = storageManager.getItem(AUTH_KEY)
       if (savedAuth) {
-        return JSON.parse(savedAuth)
+        const parsedState = JSON.parse(savedAuth)
+        if (parsedState && typeof parsedState === 'object') {
+          return parsedState
+        }
       }
     } catch (e) {
       console.error("Error loading auth state", e)
@@ -92,11 +87,14 @@ class AuthService {
     if (typeof window !== "undefined") {
       window.addEventListener("storage", (e) => {
         if (e.key === AUTH_KEY) {
-          this.state = this.loadInitialState()
-          this.notifyListeners()
+          const newState = this.loadInitialState()
+          if (JSON.stringify(newState) !== JSON.stringify(this.state)) {
+            this.state = newState
+            this.notifyListeners()
+          }
         }
       })
-      
+
       window.addEventListener(AUTH_CHANGE_EVENT, () => {
         this.notifyListeners()
       })
@@ -135,15 +133,18 @@ class AuthService {
       }
 
       if (mockResponse.success) {
-        this.storage.saveUser(mockResponse.user)
+        storageManager.saveUser(mockResponse.user)
         
-        this.state = { 
+        const newState = { 
           isAuthenticated: true, 
           user: mockResponse.user,
           error: undefined
         }
         
-        this.dispatchAuthChange()
+        if (JSON.stringify(newState) !== JSON.stringify(this.state)) {
+          this.state = newState
+          this.dispatchAuthChange()
+        }
       }
 
       return {
@@ -164,9 +165,20 @@ class AuthService {
   }
 
   logout(): void {
-    this.state = { isAuthenticated: false, user: null, error: undefined }
-    this.storage.removeItem(AUTH_KEY)
-    this.dispatchAuthChange()
+    // Borramos todos los datos del usuario
+    storageManager.clearAllUserData()
+    
+    const newState = { 
+      isAuthenticated: false, 
+      user: null, 
+      error: undefined 
+    }
+    
+    // Actualizamos el estado solo si hay cambios
+    if (JSON.stringify(newState) !== JSON.stringify(this.state)) {
+      this.state = newState
+      this.dispatchAuthChange()
+    }
     this.notifyListeners()
   }
 
@@ -183,15 +195,15 @@ class AuthService {
   }
 
   rememberUser(username: string): void {
-    this.storage.setItem(REMEMBERED_USER_KEY, username)
+    storageManager.setItem(REMEMBERED_USER_KEY, username)
   }
 
   getRememberedUser(): string | null {
-    return this.storage.getItem(REMEMBERED_USER_KEY)
+    return storageManager.getItem(REMEMBERED_USER_KEY)
   }
 
   clearRememberedUser(): void {
-    this.storage.removeItem(REMEMBERED_USER_KEY)
+    storageManager.removeItem(REMEMBERED_USER_KEY)
   }
 
   subscribe(listener: (state: AuthState) => void): () => void {
@@ -203,11 +215,7 @@ class AuthService {
   }
 
   getState(): AuthState {
-    return {
-      isAuthenticated: this.state.isAuthenticated,
-      user: this.state.user,
-      error: this.state.error
-    }
+    return this.state
   }
 }
 

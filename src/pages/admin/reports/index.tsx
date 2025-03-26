@@ -128,6 +128,23 @@ export default function ReportGenerator() {
               </div>
 
               <div>
+                <label htmlFor="dataImportance" className="block text-sm font-medium mb-2">
+                  What data is important?
+                </label>
+                <Select value={dataImportance} onValueChange={setDataImportance}>
+                  <SelectTrigger className="w-full bg-white">
+                    <SelectValue placeholder="Select important data" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="users_last_month">Users registered in the last month</SelectItem>
+                    <SelectItem value="sales_last_month">Sales of the last month</SelectItem>
+                    <SelectItem value="website_usage">Website Usage</SelectItem>
+                    <SelectItem value="generated_brands">Generated Brands</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
                 <label className="block text-sm font-medium mb-2">Period</label>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -183,22 +200,6 @@ export default function ReportGenerator() {
                 </div>
               </div>
 
-              <div>
-                <label htmlFor="dataImportance" className="block text-sm font-medium mb-2">
-                  What data is important?
-                </label>
-                <Select value={dataImportance} onValueChange={setDataImportance}>
-                  <SelectTrigger className="w-full bg-white">
-                    <SelectValue placeholder="Select important data" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="users_last_month">Users registered in the last month</SelectItem>
-                    <SelectItem value="sales_last_month">Sales of the last month</SelectItem>
-                    <SelectItem value="website_usage">Website Usage</SelectItem>
-                    <SelectItem value="generated_brands">Generated Brands</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">

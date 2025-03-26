@@ -34,7 +34,6 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             
-       
             <Route element={<ProtectedRoute requiredRole="admin" />}>
               <Route element={<ProtectedLayout role="admin" />}>
                 <Route path="/admin" element={<AdminDashboard />} />
@@ -45,13 +44,13 @@ function App() {
             
             <Route element={<ProtectedRoute requiredRole="user" />}>
               <Route element={<ProtectedLayout role="user" />}>
-                <Route path="/userLandingPage" element={<LandingPage />} />
+                <Route path="/user" element={<LandingPage />} />
               </Route>
             </Route>
             
-            <Route path="/" element={<ProtectedRoute />}>
+            <Route path="/" element={<ProtectedRoute />}>              
               <Route index element={
-                <Navigate to={authService.getUserType() === 'admin' ? '/admin' : '/dashboard'} replace />
+                <Navigate to={authService.getUserType() === 'admin' ? '/admin' : '/user'} replace />
               } />
             </Route>
             
