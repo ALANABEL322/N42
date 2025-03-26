@@ -4,7 +4,7 @@ import { authService } from './lib/authServices'
 import ProtectedRoute from './protectedRouteProps/ProtectedRouteProps'
 import LoadingSpinner from './components/loadingSpinner/LoadingSpinner'
 import Footer from './components/Footer'
-// import userLandingPage from './pages/user/UserLandingPage'
+import ReportGenerator from './pages/admin/reports/index'
 
 const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'))
 const LandingPage = lazy(() => import('./pages/user/UserLandingPage'))
@@ -39,6 +39,7 @@ function App() {
               <Route element={<ProtectedLayout role="admin" />}>
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/users" element={<UserManagement />} />
+                <Route path="/admin/reports" element={<ReportGenerator />} />
               </Route>
             </Route>
             
