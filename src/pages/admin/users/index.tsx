@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card"
+import { Card, CardContent } from "../../../components/ui/card"
 import { Input } from "../../../components/ui/input"
 import { Search, Trash2 } from "lucide-react"
 import { getMockUsers } from "../../../types/user"
@@ -31,12 +31,11 @@ function UserManagement() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-[120vh] flex flex-col items-center p-4 space-y-6 ml-0 xl:ml-64 ">
+      <h1 className="text-5xl font-bold text-center mt-20">User Management</h1>
+      
       <Card className="bg-rose-50 w-full max-w-4xl h-[65vh] overflow-y-auto">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl">User Management</CardTitle>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <div className="relative mb-6">
             <Input
               placeholder="Search"

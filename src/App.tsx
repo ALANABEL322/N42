@@ -1,9 +1,13 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useState, useEffect } from 'react';
 import { authService } from './lib/authServices';
 import ProtectedRoute from './protectedRouteProps/ProtectedRouteProps';
 import LoadingSpinner from './components/loadingSpinner/LoadingSpinner';
 import Footer from './components/Footer';
+import SidebarUserMobile from './components/SidebarUserMobile';
+import SidebarAdminMobile from './components/SidebarAdminMobile';
+import { AnimatePresence } from 'framer-motion';
+import { useFooterProximity } from './hookUI/useFooterProximity';
 
 const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
 const LandingPage = lazy(() => import('./pages/user/UserLandingPage'));
@@ -21,17 +25,43 @@ const Reports = lazy(() => import('./pages/dashboard/Reports'));
 const WebMetrics = lazy(() => import('./pages/admin/metrics/index'));
 const ReportGenerator = lazy(() => import('./pages/admin/reports/index'));
 
+function useWindowDimensions() {
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return width;
+}
+
 const ProtectedLayout = ({ role, children }: { role: 'admin' | 'user', children?: JSX.Element | JSX.Element[] }) => {
   const location = useLocation();
-  
+  const width = useWindowDimensions();
+  const isMobile = width <= 1300;
+  const isFooterNear = useFooterProximity();
+
   return (
-    <div className="flex bg-gray-100 overflow-hidden">
+    <div className="flex bg-white overflow-hidden">
       <Navbar />
       {role === 'admin' ? (
-        <Sidebar />
+        <>
+          {!isMobile && <Sidebar />}
+          <AnimatePresence>
+            {isMobile && <SidebarAdminMobile visible={!isFooterNear} />}
+          </AnimatePresence>
+        </>
       ) : (
-        // Show SidebarUser for all user routes except landing page
-        location.pathname !== '/user' && <SidebarUser />
+        location.pathname !== '/user' && (
+          <>
+            {!isMobile && <SidebarUser />}
+            <AnimatePresence>
+              {isMobile && <SidebarUserMobile visible={!isFooterNear} />}
+            </AnimatePresence>
+          </>
+        )
       )}
       <div className="flex-1 overflow-auto">
         {children || <Outlet />}
@@ -44,7 +74,7 @@ function App() {
   return (
     <Router>
       <Suspense fallback={<LoadingSpinner />}>
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen bg-white">
           <div className="flex-1">
             <Routes>
               {/* Public routes */}
