@@ -101,32 +101,32 @@ export default function LandingPage() {
       <Card className="container mx-auto px-4 py-12 md:py-20 bg-white shadow-lg rounded-xl overflow-hidden">
         <div className="flex flex-col md:flex-row">
           <div className="w-full md:w-1/2 pr-0 md:pr-6">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">It's That Easy to Optimize Your Brand</h2>
+            <h2 className="text-2xl md:text-3xl font-bold  mb-6">It's That Easy to Optimize Your Brand</h2>
 
             <ul className="space-y-4">
               <li className="flex items-start">
-                <span className="text-gray-800 mr-2 text-orange-500">•</span>
+                <span className=" mr-2 text-orange-500">•</span>
                 <p className="text-sm md:text-base text-gray-700">
                   <span className="font-medium">Configure Your Brand:</span> Customize the fundamental aspects of your corporate identity, such as mission, vision, values, and visual preferences.
                 </p>
               </li>
 
               <li className="flex items-start">
-                <span className="text-gray-800 mr-2 text-orange-500">•</span>
+                <span className=" mr-2 text-orange-500">•</span>
                 <p className="text-sm md:text-base text-gray-700">
                   <span className="font-medium">Analyze and Learn:</span> Use AI to analyze your market, audience, and competition, obtaining actionable insights in real-time.
                 </p>
               </li>
 
               <li className="flex items-start">
-                <span className="text-gray-800 mr-2 text-orange-500">•</span>
+                <span className=" mr-2 text-orange-500">•</span>
                 <p className="text-sm md:text-base text-gray-700">
                   <span className="font-medium">Design and Manage:</span> Access advanced design tools to create visual elements and key messages aligned with your brand.
                 </p>
               </li>
 
               <li className="flex items-start">
-                <span className="text-gray-800 mr-2 text-orange-500">•</span>
+                <span className=" mr-2 text-orange-500">•</span>
                 <p className="text-sm md:text-base text-gray-700">
                   <span className="font-medium">Monitor and Improve:</span> Adjust your branding strategy based on metrics, trends, and market feedback, constantly optimizing your corporate identity.
                 </p>
@@ -166,21 +166,21 @@ export default function LandingPage() {
 
             <ul className="space-y-4">
               <li className="flex items-start">
-                <span className="text-gray-800 mr-2 text-orange-500">•</span>
+                <span className=" mr-2 text-orange-500">•</span>
                 <p className="text-sm md:text-base text-gray-700">
                   <span className="font-medium">Save Time and Resources</span> by automating the creation and management of your corporate identity, reducing costs and execution times.
                 </p>
               </li>
 
               <li className="flex items-start">
-                <span className="text-gray-800 mr-2 text-orange-500">•</span>
+                <span className=" mr-2 text-orange-500">•</span>
                 <p className="text-sm md:text-base text-gray-700">
                   <span className="font-medium">Enhance Your Branding Strategy</span> with data-driven recommendations, keeping you one step ahead of the competition.
                 </p>
               </li>
 
               <li className="flex items-start">
-                <span className="text-gray-800 mr-2 text-orange-500">•</span>
+                <span className=" mr-2 text-orange-500">•</span>
                 <p className="text-sm md:text-base text-gray-700">
                   <span className="font-medium">Customize Your Brand</span> according to your target audience's preferences, ensuring consistency at every touchpoint.
                 </p>

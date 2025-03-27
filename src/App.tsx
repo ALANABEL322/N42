@@ -24,6 +24,7 @@ const ProjectManagement = lazy(() => import('./pages/dashboard/ProjectManagement
 const Reports = lazy(() => import('./pages/dashboard/Reports'));
 const WebMetrics = lazy(() => import('./pages/admin/metrics/index'));
 const ReportGenerator = lazy(() => import('./pages/admin/reports/index'));
+const BrandIdentityPreview = lazy(() => import('./components/brandIdentityPreview/BrandIdentityPreview'));
 
 function useWindowDimensions() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -100,6 +101,7 @@ function App() {
                   <Route path="/dashboard/projectManagement" element={<ProjectManagement />} />
                   <Route path="/dashboard/reports" element={<Reports />} />
                   <Route path="/dashboard/support" element={<Support />} />
+                  <Route path="/dashboard/preview" element={<BrandIdentityPreview />} />
                 </Route>
               </Route>
               
