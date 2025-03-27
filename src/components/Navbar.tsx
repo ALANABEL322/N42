@@ -14,7 +14,8 @@ export default function Navbar() {
   }
 
   const handleLogoClick = () => {
-    navigate(userType === 'admin' ? '/admin' : '/dashboard')
+    // Redirect to landing page for user, admin dashboard for admin
+    navigate(userType === 'admin' ? '/admin' : '/user')
   }
 
   return (

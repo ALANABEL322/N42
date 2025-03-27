@@ -22,7 +22,7 @@ export default function Sidebar() {
     {
       icon: BarChart3,
       label: 'Web Metrics',
-      path: '/admin/metrics'
+      path: '/admin'
     },
     {
       icon: Users,
