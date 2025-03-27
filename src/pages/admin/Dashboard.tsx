@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button'
-import Sidebar from '../../components/Sidebar'
 import { Metrics } from '../../components/metrics/Metrics'
 import { useNavigate } from 'react-router-dom'
 
@@ -11,9 +10,7 @@ export default function AdminDashboard() {
   }
   return (
     <div className="flex min-h-screen bg-gray-100 mt-16">
-      <Sidebar />
-      <div className="flex-1 min-h-screen bg-white p-8 ml-64">
-        <div className="max-w-7xl mx-auto w-full">
+      <div className="flex-1 min-h-screen bg-white p-8 ml-0 xl:ml-64">        <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold mb-8">Dashboard Metrics</h1>
           <Metrics />
           <Button 
