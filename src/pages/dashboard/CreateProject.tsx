@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent } from "../../components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ColorPaletteSelector } from "@/components/colorPaletteSelector/ColorPaletteSelector";
 import Modal from "react-modal";
-import google from '../../assets/imgModal/google.webp'
+import { useNavigate } from "react-router-dom";
+import google from '@/assets/imgModal/google.webp'
 import nike from '@/assets/imgModal/nike.png'
 import carrefour from '@/assets/imgModal/carrefour.png'
-import burguerKing from '../../assets/imgModal/burguerking.png'
+import burguerKing from '@/assets/imgModal/burguerking.png'
 
 Modal.setAppElement('#root');
 
@@ -68,13 +69,11 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
     identityType: "logotipo",
     targetAudience: "",
     sector: "",
+    colorPalette: null
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    Modal.setAppElement('#root');
-  }, []);
+  const navigate = useNavigate();
 
   const handleChange = (field: keyof ProjectFormData, value: string) => {
     setFormData((prev) => ({
@@ -83,7 +82,7 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
     }));
   };
 
-   const submitForm = (paletteData?: any) => {
+  const submitForm = (paletteData?: any) => {
     const projectData = {
       ...formData,
       colorPalette: paletteData || formData.colorPalette
@@ -98,10 +97,10 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
     submitForm();
   };
 
-
   const handleIdentityOption = (option: string) => {
     handleChange("identityType", option);
     setIsModalOpen(false);
+    navigate("/dashboard/preview");
   };
 
   const handleColorPaletteSubmit = (paletteData: any) => {
