@@ -45,7 +45,7 @@ export default function Login() {
       
       if (result.success) {
         const userType = result.userType
-        navigate(userType === 'admin' ? '/admin' : '/dashboard')
+        navigate(userType === 'admin' ? '/admin' : '/user')
       } else {
         setError(result.error || 'Login failed')
       }

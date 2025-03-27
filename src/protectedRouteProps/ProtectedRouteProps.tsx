@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { authService } from '../lib/authServices'
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 interface ProtectedRouteProps {
   children?: ReactNode
@@ -9,8 +9,20 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   const location = useLocation()
-  const isAuthenticated = authService.isAuthenticated()
-  const userType = authService.getUserType()
+  const [authState, setAuthState] = useState(authService.getState())
+
+  useEffect(() => {
+    const unsubscribe = authService.subscribe((state) => {
+      setAuthState(state)
+    })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [])
+
+  const isAuthenticated = authState.isAuthenticated
+  const userType = authState.user?.userType
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />
@@ -18,6 +30,11 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
 
   if (requiredRole && userType !== requiredRole) {
     return <Navigate to="/unauthorized" replace />
+  }
+
+  // If no requiredRole is specified, redirect based on user type
+  if (!requiredRole) {
+    return <Navigate to={userType === 'admin' ? '/admin' : '/user'} replace />
   }
 
   return children ? <>{children}</> : <Outlet />

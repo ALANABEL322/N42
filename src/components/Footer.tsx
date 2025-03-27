@@ -3,8 +3,8 @@ import footerImage from "../assets/FooterPreferente.png"
 
 export default function Footer() {
   return (
-    <footer className="bg-[#F6EEEE] border-t z-50 border-gray-200">
-      <div className="container mx-auto px-4 py-12">
+    <footer className="bg-[#F6EEEE] border-t z-50 border-gray-200 w-full">
+      <div className="container mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
           <div className="flex flex-col items-start lg:col-span-1">
             <img
@@ -84,8 +84,8 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 pt-6 border-t border-gray-200 text-center">
-          <p className="text-gray-500 text-sm">
+        <div className="mt-16 border-t border-gray-200 text-center">
+          <p className="text-gray-500 text-sm mt-5">
             &copy; {new Date().getFullYear()} Heratia. Todos los derechos reservados.
           </p>
         </div>

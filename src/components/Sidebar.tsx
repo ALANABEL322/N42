@@ -22,7 +22,7 @@ export default function Sidebar() {
     {
       icon: BarChart3,
       label: 'Web Metrics',
-      path: '/admin/metrics'
+      path: '/admin'
     },
     {
       icon: Users,
@@ -43,7 +43,7 @@ export default function Sidebar() {
           <div className="flex items-center space-x-3 mb-6">
             <User className="h-6 w-6 text-gray-400" />
             <span className="text-gray-800 font-medium">
-              Admin: {authState.user?.username || 'Usuario'}
+              Admin: {authState.user?.username || 'User'}
             </span>
           </div>
 
@@ -52,9 +52,9 @@ export default function Sidebar() {
               <button
                 key={index}
                 onClick={() => navigate(item.path)}
-                className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md w-full"
+                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors"
               >
-                <item.icon className="h-5 w-5 mr-3 text-gray-400" />
+                <item.icon className="h-5 w-5 text-gray-400 mr-3" />
                 {item.label}
               </button>
             ))}
