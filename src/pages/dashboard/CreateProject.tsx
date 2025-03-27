@@ -1,11 +1,44 @@
-import React, { useState } from "react";
-import { Card, CardContent } from "../../components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
+import React, { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ColorPaletteSelector } from "@/components/colorPaletteSelector/ColorPaletteSelector";
+import Modal from "react-modal";
+import { useNavigate } from "react-router-dom";
+import google from '@/assets/imgModal/google.webp'
+import nike from '@/assets/imgModal/nike.png'
+import carrefour from '@/assets/imgModal/carrefour.png'
+import burguerKing from '@/assets/imgModal/burguerking.png'
+
+Modal.setAppElement('#root');
+
+const customStyles = {
+  overlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 50,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    maxWidth: '500px',
+    width: '90%',
+    padding: '2rem',
+    border: 'none',
+    borderRadius: '0.5rem',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+  }
+};
+
 
 interface ProjectCreationFormProps {
   onSubmit?: (formData: ProjectFormData) => void
@@ -22,7 +55,7 @@ export interface ProjectFormData {
   identityType: string
   targetAudience: string
   sector: string
-  colorPalette: any
+  colorPalette?: any
 }
 
 export default function CreateProject({ onSubmit, className }: ProjectCreationFormProps) {
@@ -36,24 +69,42 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
     identityType: "logotipo",
     targetAudience: "",
     sector: "",
-    colorPalette: null,
-  })
+    colorPalette: null
+  });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (field: keyof ProjectFormData, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
-    }))
-  }
+    }));
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const submitForm = (paletteData?: any) => {
     const projectData = {
       ...formData,
+      colorPalette: paletteData || formData.colorPalette
     };
     if (onSubmit) {
       onSubmit(projectData);
     }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    submitForm();
+  };
+
+  const handleIdentityOption = (option: string) => {
+    handleChange("identityType", option);
+    setIsModalOpen(false);
+    navigate("/dashboard/preview");
+  };
+
+  const handleColorPaletteSubmit = (paletteData: any) => {
+    setFormData(prev => ({ ...prev, colorPalette: paletteData }));
   };
 
   return (
@@ -148,6 +199,7 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                       <SelectContent>
                         <SelectItem value="logotipo">Logotipo</SelectItem>
                         <SelectItem value="isotipo">Isotipo</SelectItem>
+                        <SelectItem value="imagotipo">Imagotipo</SelectItem>
                         <SelectItem value="isologo">Isologo</SelectItem>
                       </SelectContent>
                     </Select>
@@ -179,12 +231,8 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
 
           <div className="mt-6">
             <ColorPaletteSelector
-              onSubmit={(paletteData) => {
-                setFormData((prev) => ({ ...prev, colorPalette: paletteData }));
-              }}
-              onSkip={() => {
-            
-              }}
+              onSubmit={handleColorPaletteSubmit}
+              onSkip={() => submitForm()} 
             />
           </div>
 
@@ -192,19 +240,116 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
             <Button
               type="button"
               variant="outline"
-              onClick={() => {
-           
-              }}
+              onClick={() => submitForm()}
               className="border-gray-300 text-gray-700 hover:bg-gray-50"
             >
               Omitir
             </Button>
-            <Button type="submit" className="bg-[#E65100] hover:bg-[#D84315] text-white mb-10">
+            <Button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="bg-primary hover:bg-primary/90 text-white"
+            >
               Continuar
             </Button>
           </div>
         </form>
       </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="Opciones de Identidad"
+        style={customStyles}
+        ariaHideApp={true}
+        shouldFocusAfterRender={true}
+        shouldCloseOnOverlayClick={true}
+        shouldCloseOnEsc={true}
+        preventScroll={true}
+        role="dialog"
+        aria-modal="true"
+      >
+        <div className="modal-content relative">
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className="absolute top-[-1.3rem]  right-[-1.3rem]  p-2 hover:bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50"
+            aria-label="Cerrar"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500 hover:text-gray-700">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+
+          <div className="flex items-start mb-6">
+            <div className="bg-primary/10 p-3 rounded-full mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary w-6 h-6">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Construye tu Identidad Visual</h2>
+              <p className="text-gray-600 mt-1">Selecciona el estilo que mejor represente tu marca</p>
+            </div>
+          </div>
+
+
+          <div className="space-y-3">
+            <button
+              className="w-full p-4 bg-white border border-gray-200 rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 flex items-start group focus:outline-none focus:ring-2 focus:ring-primary/50"
+              onClick={() => handleIdentityOption("logotipo")}
+            >
+              <div className="bg-blue-100 p-1 rounded-lg mr-4">
+                <img src={google} alt="image Logotipo" className="w-10 h-10" />
+              </div>
+              <div className="text-left">
+                <h3 className="font-semibold text-gray-900 group-hover:text-primary">Logotipo</h3>
+                <p className="text-gray-600 text-sm mt-1">Texto estilizado que representa tu marca</p>
+              </div>
+            </button>
+            
+            <button
+              className="w-full p-4 bg-white border border-gray-200 rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 flex items-start group focus:outline-none focus:ring-2 focus:ring-primary/50"
+              onClick={() => handleIdentityOption("isotipo")}
+            >
+              <div className="bg-purple-100 p-2 rounded-lg mr-4">
+              <img src={nike} alt="image isotipo" className="w-8 h-8" />
+              </div>
+              <div className="text-left">
+                <h3 className="font-semibold text-gray-900 group-hover:text-primary">Isotipo</h3>
+                <p className="text-gray-600 text-sm mt-1">Símbolo gráfico sin texto que identifica tu marca</p>
+              </div>
+            </button>
+
+            <button
+              className="w-full p-4 bg-white border border-gray-200 rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 flex items-start group focus:outline-none focus:ring-2 focus:ring-primary/50"
+              onClick={() => handleIdentityOption("isologo")}
+            >
+              <div className="bg-orange-100 p-2 rounded-lg mr-4">
+                <img src={carrefour} alt="image isologo" className="w-8 h-8" />
+              </div>
+              <div className="text-left">
+                <h3 className="font-semibold text-gray-900 group-hover:text-primary">Isologo</h3>
+                <p className="text-gray-600 text-sm mt-1">Texto y símbolo integrados en un mismo elemento</p>
+              </div>
+            </button>
+            
+            <button
+              className="w-full p-4 bg-white border border-gray-200 rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 flex items-start group focus:outline-none focus:ring-2 focus:ring-primary/50"
+              onClick={() => handleIdentityOption("isologo")}
+            >
+              <div className="bg-orange-100 p-2 rounded-lg mr-4">
+                <img src={burguerKing} alt="image isologo" className="w-8 h-8" />
+              </div>
+              <div className="text-left">
+                <h3 className="font-semibold text-gray-900 group-hover:text-primary">Isologo</h3>
+                <p className="text-gray-600 text-sm mt-1">Texto y símbolo integrados en un mismo elemento</p>
+              </div>
+            </button>
+          </div>
+        </div>
+      </Modal>
     </motion.div>
-  )
+  );
 }
