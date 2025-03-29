@@ -1,4 +1,4 @@
-import BrandIdentityPreview from "@/components/brandIdentityPreview/BrandIdentityPreview";
+import BrandIdentityPreview from "../../../components/brandIdentityPreview/BrandIdentityPreview";
 
 export default function PreviewPage() {
   return (
