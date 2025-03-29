@@ -1,54 +1,78 @@
-# React + TypeScript + Vite
+# Brand Identity Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
 
-Currently, two official plugins are available:
+This is a modern web application that helps businesses create and manage their brand identity professionally and efficiently. The application is built with React, TypeScript, and Vite, utilizing modern technologies to provide an optimal user experience.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Architecture and Roles
 
-## Expanding the ESLint configuration
+The system is designed with two main roles:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 1. User (Client)
+- **Main Dashboard**: Primary interface for brand identity project management.
+- **Project Creation**: Tool for initiating new brand identity projects.
+- **Project Management**: Visualization and management of existing projects.
+- **Technical Support**: System of frequently asked questions and personalized support.
+- **Preview**: Tool for viewing and testing brand identity before implementation.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### 2. Administrator
+- **Admin Panel**: Centralized interface for system management.
+- **User Management**: Administration of user accounts.
+- **Report Management**: Generation and visualization of analytical reports.
+- **Web Metrics**: Monitoring of system metrics and statistics.
+- **Technical Support**: Management of support messages and responses.
+
+## Main Features
+
+### Brand Identity System
+- **Market Analysis**: Tools for analyzing trends and competitors.
+- **Identity Generation**: Automated system for creating consistent brand identities.
+- **Customization**: Options for adapting brand identity to specific business needs.
+- **Preview**: Tool for viewing and testing brand identity before implementation.
+
+### Support System
+- **FAQ**: Database of frequently asked questions and answers about brand identity.
+- **Support Chat**: Messaging system for communication between users and administrators.
+- **Message Management**: System for managing and responding to support messages.
+- **Notifications**: Notification system to keep users informed about responses and updates.
+
+## Technologies Used
+
+### Frontend
+- **React**: Main library for the user interface.
+- **TypeScript**: Static typing for enhanced security and maintainability.
+- **Vite**: Fast and efficient development framework.
+- **Tailwind CSS**: CSS framework for modern and responsive styles.
+- **Framer Motion**: Library for smooth and professional animations.
+
+### State and Data Management
+- **Zustand**: Global state management for the support system.
+- **React Query**: State and data caching management.
+
+### Routing and Authentication
+- **React Router**: Navigation and routing management.
+- **Protected Routes**: Route protection system based on user roles.
+
+## Project Structure
+
+```
+src/
+├── components/          # Reusable components
+├── pages/              # Main pages
+├── store/              # Global state management
+├── contexts/           # React contexts
+├── lib/                # Functions and utilities
+├── hooks/             # Custom hooks
+└── types/             # TypeScript types
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Installation and Execution
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+1. Clone the repository
+2. Install dependencies:
+```bash
+npm install
 ```
+3. Start the development server:
+```bash
+npm run dev
