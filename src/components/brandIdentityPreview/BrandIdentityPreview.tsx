@@ -3,6 +3,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Image } from "lucide-react";
 import { motion } from "framer-motion";
 import { DefaultFontPreloader } from "@/components/FontPreloader";
+import { useBrandPreviewStore } from "../../store/brandPreviewStore";
+import { useProjectsStore } from "../../store/projectsStore";
+import { useProjectDetailsStore } from "../../store/projectDetailsStore";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 interface ColorPalette {
   cian: string;
@@ -28,6 +33,17 @@ interface ProjectTemplate {
   colorPalette: ColorPalette;
   typography: TypographySample;
   mockupImages: string[];
+}
+
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  brandName: string;
+  slogan: string;
+  colorPalette: ColorPalette;
+  typography: TypographySample;
+  mockupImage: string;
 }
 
 const TYPOGRAPHY_SAMPLES = {
@@ -69,9 +85,9 @@ const PROJECT_TEMPLATES: ProjectTemplate[] = [
     },
     typography: TYPOGRAPHY_SAMPLES.Roboto,
     mockupImages: [
-      "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dGVjaCUyMGRldmljZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8dGVjaCUyMGRhc2hib2FyZHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-      "https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVjaCUyMG9mZmljZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
+      "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
+      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85"
     ]
   },
   {
@@ -88,9 +104,9 @@ const PROJECT_TEMPLATES: ProjectTemplate[] = [
     },
     typography: TYPOGRAPHY_SAMPLES.Montserrat,
     mockupImages: [
-      "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8ZWxlZ2FudCUyMGZhc2hpb258ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
-      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGx1eHVyeSUyMGZhc2hpb258ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
-      "https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGZhc2hpb24lMjBzaG93fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60"
+      "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368",
+      "https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5",
+      "https://images.unsplash.com/photo-1476231682828-37e571bc172f",
     ]
   },
   {
@@ -107,9 +123,9 @@ const PROJECT_TEMPLATES: ProjectTemplate[] = [
     },
     typography: TYPOGRAPHY_SAMPLES.Poppins,
     mockupImages: [
-      "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dGVjaCUyMGRldmljZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8dGVjaCUyMGRhc2hib2FyZHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-      "https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVjaCUyMG9mZmljZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
+      "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3",
+      "https://images.unsplash.com/photo-1517976487492-5750f3195933",
+      "https://eskipaper.com/images/cosmic-nebula-1.jpg​"
     ]
   }
 ];
@@ -137,30 +153,56 @@ const DEFAULT_TEMPLATE: ProjectTemplate = {
 };
 
 export default function BrandIdentityPreview() {
-  const [selectedTemplate, setSelectedTemplate] = useState<ProjectTemplate | null>(null);
-  const [previewData, setPreviewData] = useState<ProjectTemplate>(DEFAULT_TEMPLATE);
+  const { previewData, setPreviewData } = useBrandPreviewStore();
+  const addProject = useProjectsStore((state) => state.addProject);
+  const setProjectDetails = useProjectDetailsStore((state) => state.setProjectDetails);
+  const navigate = useNavigate();
+  const selectedTemplate = PROJECT_TEMPLATES.find(t => t.id === previewData.selectedTemplate);
 
-  const loadFonts = () => {
-    const fontsToLoad = [
-      ...Object.values(TYPOGRAPHY_SAMPLES).map(font => font.googleFontLink),
-      DEFAULT_TEMPLATE.typography.googleFontLink
-    ];
-
-    fontsToLoad.forEach(fontUrl => {
+  useEffect(() => {
+    if (previewData.typography?.googleFontLink) {
       const link = document.createElement('link');
-      link.href = fontUrl;
+      link.href = previewData.typography.googleFontLink;
       link.rel = 'stylesheet';
       document.head.appendChild(link);
+      return () => {
+        document.head.removeChild(link);
+      };
+    }
+  }, [previewData.typography?.googleFontLink]);
+
+  const handleTemplateSelect = (template: ProjectTemplate) => {
+    setPreviewData({
+      ...previewData,
+      selectedTemplate: template.id,
+      brandName: template.brandName,
+      slogan: template.slogan,
+      colorPalette: template.colorPalette,
+      typography: template.typography,
+      mockupImages: template.mockupImages,
+      selectedImage: template.mockupImages[0]
     });
   };
 
-  useEffect(() => {
-    loadFonts();
-  }, []);
+  const handleSaveProject = () => {
+    if (!selectedTemplate || !previewData.brandName || !previewData.selectedImage) {
+      return;
+    }
 
-  const handleTemplateSelect = (template: ProjectTemplate) => {
-    setSelectedTemplate(template);
-    setPreviewData(template);
+    const project: Project = {
+      id: Date.now().toString(),
+      title: previewData.brandName,
+      description: selectedTemplate.description,
+      brandName: previewData.brandName,
+      slogan: previewData.slogan || selectedTemplate.slogan,
+      colorPalette: previewData.colorPalette || selectedTemplate.colorPalette,
+      typography: previewData.typography || selectedTemplate.typography,
+      mockupImage: previewData.selectedImage
+    };
+
+    addProject(project);
+    setProjectDetails(project);
+    navigate('/dashboard/projects');
   };
 
   const container = {
@@ -186,11 +228,12 @@ export default function BrandIdentityPreview() {
         initial="hidden"
         animate="show"
         className="w-full max-w-5xl mx-auto p-4 sm:p-6 lg:ml-[17rem] 2xl:ml-[30rem]"
-       >
+      >
         <motion.div variants={item} className="mb-12">
           <h2 className="text-4xl font-bold mb-6 text-center mt-24">Selecciona una plantilla</h2>
           
           <div className="flex flex-col lg:flex-row lg:flex-wrap gap-6">
+            {/* Primeras dos cards */}
             <div className="flex flex-col md:flex-row gap-6 w-full lg:w-auto lg:flex-1">
               {PROJECT_TEMPLATES.slice(0, 2).map((template) => (
                 <motion.div 
@@ -200,7 +243,7 @@ export default function BrandIdentityPreview() {
                   className="w-full md:w-1/2 lg:w-full"
                 >
                   <Card
-                    className={`cursor-pointer transition-all ${selectedTemplate?.id === template.id ? 'ring-primary' : 'hover:shadow-md'}`}
+                    className={`cursor-pointer transition-all outline-none ${selectedTemplate?.id === template.id ? 'ring-primary' : 'hover:shadow-md'}`}
                     onClick={() => handleTemplateSelect(template)}
                   >
                     <CardContent className="p-6">
@@ -244,10 +287,10 @@ export default function BrandIdentityPreview() {
               className="w-full lg:w-[calc(40%-4.5rem)] xl:w-[calc(40%-4.5rem)]"
             >
               <Card
-                className={`cursor-pointer transition-all${selectedTemplate?.id === PROJECT_TEMPLATES[2].id ? 'ring-primary' : 'hover:shadow-md'}`}
+                className={`cursor-pointer transition-all outline-none ${selectedTemplate?.id === PROJECT_TEMPLATES[2].id ? 'ring-primary' : 'hover:shadow-md'}`}
                 onClick={() => handleTemplateSelect(PROJECT_TEMPLATES[2])}
               >
-                <CardContent className="p-6 ">
+                <CardContent className="p-6">
                   <div className="flex flex-col items-center text-center">
                     <div className="w-full h-[15rem] lg:h-auto aspect-video bg-gradient-to-br mb-4 rounded-lg"
                       style={{
@@ -282,20 +325,43 @@ export default function BrandIdentityPreview() {
           </div>
         </motion.div>
 
+        {selectedTemplate && (
+          <motion.div variants={item} className="mb-12">
+            <h2 className="text-2xl font-medium mb-4">Selecciona una imagen para tu proyecto</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {selectedTemplate.mockupImages.map((image, index) => (
+                <div
+                  key={index}
+                  className={`cursor-pointer rounded-lg overflow-hidden border-2 ${
+                    previewData.selectedImage === image ? 'border-orange-500' : 'border-transparent'
+                  }`}
+                  onClick={() => setPreviewData({ ...previewData, selectedImage: image })}
+                >
+                  <img
+                    src={image}
+                    alt={`Mockup ${index + 1}`}
+                    className="w-full h-48 object-cover hover:opacity-90 transition-opacity"
+                  />
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
         <motion.div variants={item}>
           <Card className="bg-[#FFF5F5] border-0 shadow-sm mb-6">
             <CardContent className="flex flex-col items-center justify-center p-16">
               <div 
                 className="text-2xl font-bold text-gray-500 mb-2"
-                style={{ fontFamily: previewData.typography.fontFamily }}
+                style={{ fontFamily: previewData.typography?.fontFamily || selectedTemplate?.typography.fontFamily }}
               >
-                {previewData.brandName || "Nombre de la marca"}
+                {previewData.brandName || selectedTemplate?.brandName}
               </div>
               <div 
                 className="text-muted-foreground text-center max-w-md"
-                style={{ fontFamily: previewData.typography.fontFamily }}
+                style={{ fontFamily: previewData.typography?.fontFamily || selectedTemplate?.typography.fontFamily }}
               >
-                {previewData.slogan || "Lorem ipsum dolor sit amet consectetur adipiscing elit..."}
+                {previewData.slogan || selectedTemplate?.slogan}
               </div>
             </CardContent>
           </Card>
@@ -304,12 +370,12 @@ export default function BrandIdentityPreview() {
         <motion.div variants={item} className="mb-6">
           <h2 
             className="text-2xl font-medium mb-3 mt-20"
-            style={{ fontFamily: previewData.typography.fontFamily }}
+            style={{ fontFamily: previewData.typography?.fontFamily || selectedTemplate?.typography.fontFamily }}
           >
             Paleta de colores utilizadas
           </h2>
           <div className="grid grid-cols-4 gap-3">
-            {Object.entries(previewData.colorPalette).map(([name, color]) => (
+            {Object.entries(previewData.colorPalette || selectedTemplate?.colorPalette).map(([name, color]) => (
               <div key={name} className="flex flex-col">
                 <div
                   className="h-16 rounded-lg mb-1"
@@ -318,7 +384,7 @@ export default function BrandIdentityPreview() {
                 />
                 <span 
                   className="text-sm text-center text-gray-600 capitalize"
-                  style={{ fontFamily: previewData.typography.fontFamily }}
+                  style={{ fontFamily: previewData.typography?.fontFamily || selectedTemplate?.typography.fontFamily }}
                 >
                   {name}
                 </span>
@@ -330,7 +396,7 @@ export default function BrandIdentityPreview() {
         <motion.div variants={item} className="mb-6">
           <h2 
             className="text-2xl font-medium mb-3 mt-20"
-            style={{ fontFamily: previewData.typography.fontFamily }}
+            style={{ fontFamily: previewData.typography?.fontFamily || selectedTemplate?.typography.fontFamily }}
           >
             Tipografía utilizada
           </h2>
@@ -339,20 +405,20 @@ export default function BrandIdentityPreview() {
               <div className="flex-1">
                 <h3 
                   className="text-lg font-semibold mb-4"
-                  style={{ fontFamily: previewData.typography.fontFamily }}
+                  style={{ fontFamily: previewData.typography?.fontFamily || selectedTemplate?.typography.fontFamily }}
                 >
-                  {previewData.typography.name}
+                  {previewData.typography?.name || selectedTemplate?.typography.name}
                 </h3>
                 <div className="flex items-start gap-6">
                   <div 
                     className="text-6xl font-bold" 
-                    style={{ fontFamily: previewData.typography.fontFamily }}
+                    style={{ fontFamily: previewData.typography?.fontFamily || selectedTemplate?.typography.fontFamily }}
                   >
                     Aa
                   </div>
                   <div 
                     className="text-sm pt-2" 
-                    style={{ fontFamily: previewData.typography.fontFamily }}
+                    style={{ fontFamily: previewData.typography?.fontFamily || selectedTemplate?.typography.fontFamily }}
                   >
                     <div>Aa Bb Cc Ee Ff Gg Hh</div>
                     <div>Ii Jj Kk Ll Mm Nn Oo</div>
@@ -363,15 +429,15 @@ export default function BrandIdentityPreview() {
               <div className="flex-1">
                 <h3 
                   className="text-lg font-semibold mb-4"
-                  style={{ fontFamily: previewData.typography.fontFamily }}
+                  style={{ fontFamily: previewData.typography?.fontFamily || selectedTemplate?.typography.fontFamily }}
                 >
                   Ejemplo de texto
                 </h3>
                 <p 
                   className="text-lg leading-relaxed"
-                  style={{ fontFamily: previewData.typography.fontFamily }}
+                  style={{ fontFamily: previewData.typography?.fontFamily || selectedTemplate?.typography.fontFamily }}
                 >
-                  {previewData.typography.sampleText}
+                  {previewData.typography?.sampleText || selectedTemplate?.typography.sampleText}
                 </p>
               </div>
             </div>
@@ -379,17 +445,17 @@ export default function BrandIdentityPreview() {
             <div className="mt-6">
               <h3 
                 className="text-lg font-semibold mb-3"
-                style={{ fontFamily: previewData.typography.fontFamily }}
+                style={{ fontFamily: previewData.typography?.fontFamily || selectedTemplate?.typography.fontFamily }}
               >
               Pesos disponibles
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {previewData.typography.weights.map((weight) => (
+              {(previewData.typography?.weights || selectedTemplate?.typography.weights).map((weight) => (
                 <div 
                   key={weight} 
                   className="p-3 border rounded-lg"
                   style={{ 
-                    fontFamily: previewData.typography.fontFamily,
+                    fontFamily: previewData.typography?.fontFamily || selectedTemplate?.typography.fontFamily,
                     fontWeight: parseInt(weight)
                   }}
                 >
@@ -405,7 +471,7 @@ export default function BrandIdentityPreview() {
         <motion.div variants={item}>
           <h2 
             className="text-2xl font-medium mb-3 mt-20"
-            style={{ fontFamily: previewData.typography.fontFamily }}
+            style={{ fontFamily: previewData.typography?.fontFamily || selectedTemplate?.typography.fontFamily }}
           >
             Mockups
           </h2>
@@ -415,9 +481,9 @@ export default function BrandIdentityPreview() {
                 key={`mockup-${index}`}
                 className="aspect-[4/3] bg-[#FFF5F5] rounded-lg flex items-center justify-center"
               >
-                {previewData.mockupImages[index] ? (
+                {(previewData.mockupImages || selectedTemplate?.mockupImages)[index] ? (
                   <img
-                    src={previewData.mockupImages[index]}
+                    src={(previewData.mockupImages || selectedTemplate?.mockupImages)[index]}
                     alt={`Mockup ${index + 1}`}
                     className="w-full h-full object-cover rounded-lg"
                   />
@@ -428,9 +494,9 @@ export default function BrandIdentityPreview() {
             ))}
           </div>
           <div className="aspect-[16/9] mb-10 bg-[#FFF5F5] rounded-lg flex items-center justify-center">
-            {previewData.mockupImages[2] ? (
+            {(previewData.mockupImages || selectedTemplate?.mockupImages)[2] ? (
               <img
-                src={previewData.mockupImages[2]}
+                src={(previewData.mockupImages || selectedTemplate?.mockupImages)[2]}
                 alt="Mockup 3"
                 className="w-full h-full object-cover rounded-lg"
               />
@@ -439,6 +505,15 @@ export default function BrandIdentityPreview() {
             )}
           </div>
         </motion.div>
+        <Button
+          onClick={handleSaveProject}
+          className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-md shadow-lg"
+          disabled={!selectedTemplate || !previewData.brandName || !previewData.selectedImage}
+        >
+          Guardar Proyecto
+        </Button>
+      </motion.div>
+      <motion.div variants={item} className="fixed bottom-8 right-8 z-50">
       </motion.div>
     </>
   );

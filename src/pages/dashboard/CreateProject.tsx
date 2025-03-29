@@ -8,7 +8,11 @@ import { Button } from "@/components/ui/button";
 import { ColorPaletteSelector } from "@/components/colorPaletteSelector/ColorPaletteSelector";
 import Modal from "react-modal";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useFormData } from "@/hooks/useFormData";
+import { useProjectsStore } from "@/store/projectsStore";
+import { useProjectDetailsStore } from "@/store/projectDetailsStore";
+import { useBrandIdentityStore } from "@/store/brandIdentityStore";
+import { ColorOption } from "@/components/colorPaletteSelector/ColorPaletteSelector";
+import { Project } from "@/types/project";
 
 Modal.setAppElement('#root');
 
@@ -42,18 +46,22 @@ interface ProjectCreationFormProps {
 }
 
 export default function CreateProject({ onSubmit, className }: ProjectCreationFormProps) {
-  const { formData, updateField, updateColorPalette } = useFormData();
+  const { brandIdentity, setBrandIdentity } = useBrandIdentityStore();
   const [currentStep, setCurrentStep] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const addProject = useProjectsStore((state) => state.addProject);
+  const setProjectDetails = useProjectDetailsStore((state) => state.setProjectDetails);
 
   const handleNextStep = (data?: any) => {
     if (currentStep === 2 && data) {
-      updateColorPalette({
-        selectedPalette: data.selectedPalette,
-        typography: data.typography,
-        graphicDescription: data.graphicDescription
+      setBrandIdentity({
+        colorPalette: {
+          selectedPalette: data.selectedPalette,
+          typography: data.typography,
+          graphicDescription: data.graphicDescription
+        }
       });
     }
     setCurrentStep((prev) => prev + 1);
@@ -64,10 +72,31 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
   };
 
   const submitForm = () => {
-    console.log('Final form submission data:', formData);
-    if (onSubmit) {
-      onSubmit(formData);
-    }
+    const project: Project = {
+      id: Date.now().toString(),
+      title: brandIdentity.brandName,
+      description: brandIdentity.mission || "",
+      brandName: brandIdentity.brandName,
+      slogan: brandIdentity.slogan || "",
+      colorPalette: {
+        cian: brandIdentity.colorPalette.selectedPalette.color || "#E0F7FA",
+        magenta: brandIdentity.colorPalette.selectedPalette.color || "#FCE4EC",
+        amarillo: brandIdentity.colorPalette.selectedPalette.color || "#FFFDE7",
+        negro: brandIdentity.colorPalette.selectedPalette.color || "#0D0D0D"
+      },
+      typography: {
+        name: "Roboto",
+        fontFamily: "'Roboto', sans-serif",
+        googleFontLink: "",
+        weights: ["400", "500", "700"],
+        sampleText: ""
+      },
+      mockupImage: "https://via.placeholder.com/800x600"
+    };
+
+    addProject(project);
+    setProjectDetails(project);
+    navigate(`/dashboard/projects/${project.id}`);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -80,7 +109,7 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
   };
 
   const handleIdentityOption = (option: string) => {
-    updateField("identityType", option);
+    setBrandIdentity({ identityType: option });
   };
 
   if (currentStep === 1) {
@@ -96,8 +125,8 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                   <Label htmlFor="brandName">Nombre de la Marca</Label>
                   <Input
                     id="brandName"
-                    value={formData.brandName}
-                    onChange={(e) => updateField('brandName', e.target.value)}
+                    value={brandIdentity.brandName}
+                    onChange={(e) => setBrandIdentity({ brandName: e.target.value })}
                     required
                   />
                 </div>
@@ -106,8 +135,8 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                   <Label htmlFor="slogan">Slogan</Label>
                   <Input
                     id="slogan"
-                    value={formData.slogan}
-                    onChange={(e) => updateField('slogan', e.target.value)}
+                    value={brandIdentity.slogan}
+                    onChange={(e) => setBrandIdentity({ slogan: e.target.value })}
                   />
                 </div>
                 
@@ -115,8 +144,8 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                   <Label htmlFor="mission">Misión</Label>
                   <Input
                     id="mission"
-                    value={formData.mission}
-                    onChange={(e) => updateField('mission', e.target.value)}
+                    value={brandIdentity.mission}
+                    onChange={(e) => setBrandIdentity({ mission: e.target.value })}
                   />
                 </div>
                 
@@ -124,8 +153,8 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                   <Label htmlFor="vision">Visión</Label>
                   <Input
                     id="vision"
-                    value={formData.vision}
-                    onChange={(e) => updateField('vision', e.target.value)}
+                    value={brandIdentity.vision}
+                    onChange={(e) => setBrandIdentity({ vision: e.target.value })}
                   />
                 </div>
                 
@@ -133,8 +162,8 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                   <Label htmlFor="values">Valores</Label>
                   <Input
                     id="values"
-                    value={formData.values}
-                    onChange={(e) => updateField('values', e.target.value)}
+                    value={brandIdentity.values}
+                    onChange={(e) => setBrandIdentity({ values: e.target.value })}
                   />
                 </div>
                 
@@ -142,8 +171,8 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                   <Label htmlFor="objective">Objetivo</Label>
                   <Input
                     id="objective"
-                    value={formData.objective}
-                    onChange={(e) => updateField('objective', e.target.value)}
+                    value={brandIdentity.objective}
+                    onChange={(e) => setBrandIdentity({ objective: e.target.value })}
                   />
                 </div>
                 
@@ -151,16 +180,16 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                   <Label htmlFor="targetAudience">Público Objetivo</Label>
                   <Input
                     id="targetAudience"
-                    value={formData.targetAudience}
-                    onChange={(e) => updateField('targetAudience', e.target.value)}
+                    value={brandIdentity.targetAudience}
+                    onChange={(e) => setBrandIdentity({ targetAudience: e.target.value })}
                   />
                 </div>
                 
                 <div>
                   <Label htmlFor="sector">Sector</Label>
                   <Select
-                    value={formData.sector}
-                    onValueChange={(value) => updateField('sector', value)}
+                    value={brandIdentity.sector}
+                    onValueChange={(value) => setBrandIdentity({ sector: value })}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecciona un sector" />
@@ -265,21 +294,21 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                     <div className="space-y-4">
                       <div>
                         <p className="text-sm text-gray-500 uppercase tracking-wider">Nombre de la Marca</p>
-                        <p className="text-lg font-semibold">{formData.brandName || 'No especificado'}</p>
+                        <p className="text-lg font-semibold">{brandIdentity.brandName || 'No especificado'}</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-500 uppercase tracking-wider">Sector</p>
-                        <p className="text-lg font-semibold">{formData.sector || 'No especificado'}</p>
+                        <p className="text-lg font-semibold">{brandIdentity.sector || 'No especificado'}</p>
                       </div>
                     </div>
                     <div className="space-y-4">
                       <div>
                         <p className="text-sm text-gray-500 uppercase tracking-wider">Público Objetivo</p>
-                        <p className="text-lg font-semibold">{formData.targetAudience || 'No especificado'}</p>
+                        <p className="text-lg font-semibold">{brandIdentity.targetAudience || 'No especificado'}</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-500 uppercase tracking-wider">Tipo de Identidad</p>
-                        <p className="text-lg font-semibold capitalize">{formData.identityType || 'No especificado'}</p>
+                        <p className="text-lg font-semibold capitalize">{brandIdentity.identityType || 'No especificado'}</p>
                       </div>
                     </div>
                   </div>
@@ -293,20 +322,20 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                       className="border rounded-lg p-4 flex flex-col items-center bg-[#F6EEEE]"
                     >
                       <h4 className="font-semibold mb-4 text-center">Paleta de Colores</h4>
-                      {formData.colorPalette?.selectedPalette && (
+                      {brandIdentity.colorPalette?.selectedPalette && (
                         <div className="flex flex-col items-center space-y-3">
                           <div 
                             className="w-20 h-20 rounded-full shadow-md border-2 border-gray-200"
-                            style={{ backgroundColor: formData.colorPalette.selectedPalette.color }}
+                            style={{ backgroundColor: brandIdentity.colorPalette.selectedPalette.color }}
                           />
                           <div className="text-center">
                             <p className="text-sm text-gray-500">Nombre</p>
-                            <p className="font-medium">{formData.colorPalette.selectedPalette.name}</p>
+                            <p className="font-medium">{brandIdentity.colorPalette.selectedPalette.name}</p>
                           </div>
                           <div className="text-center">
                             <p className="text-sm text-gray-500">Código HEX</p>
                             <p className="font-mono font-medium">
-                              {formData.colorPalette.selectedPalette.color}
+                              {brandIdentity.colorPalette.selectedPalette.color}
                             </p>
                           </div>
                         </div>
@@ -320,17 +349,17 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                       <h4 className="font-semibold mb-4 text-center">Tipografía</h4>
                       <div className="flex flex-col items-center space-y-3">
                         <div className="text-5xl font-sans" style={{
-                          fontFamily: formData.colorPalette?.typography === 'roboto' ? 'Roboto' :
-                          formData.colorPalette?.typography === 'montserrat' ? 'Montserrat' :
-                          formData.colorPalette?.typography === 'poppins' ? 'Poppins' :
-                          formData.colorPalette?.typography === 'inter' ? 'Inter' : 'inherit'
+                          fontFamily: brandIdentity.colorPalette?.typography === 'roboto' ? 'Roboto' :
+                          brandIdentity.colorPalette?.typography === 'montserrat' ? 'Montserrat' :
+                          brandIdentity.colorPalette?.typography === 'poppins' ? 'Poppins' :
+                          brandIdentity.colorPalette?.typography === 'inter' ? 'Inter' : 'inherit'
                         }}>
                           Aa
                         </div>
                         <div className="text-center">
                           <p className="text-sm text-gray-500">Familia tipográfica</p>
                           <p className="font-medium capitalize">
-                            {formData.colorPalette?.typography || 'No seleccionada'}
+                            {brandIdentity.colorPalette?.typography || 'No seleccionada'}
                           </p>
                         </div>
                       </div>
@@ -355,7 +384,7 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                     setIsModalOpen(false);
                     submitForm();
                   }}
-                  disabled={!formData.colorPalette?.selectedPalette || !formData.colorPalette?.typography}
+                  disabled={!brandIdentity.colorPalette?.selectedPalette || !brandIdentity.colorPalette?.typography}
                 >
                   Finalizar
                 </Button>

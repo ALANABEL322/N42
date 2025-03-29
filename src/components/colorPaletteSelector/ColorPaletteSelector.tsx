@@ -19,7 +19,7 @@ export interface PaletteSelectionData {
   graphicDescription: string;
 }
 
-interface ColorOption {
+export interface ColorOption {
   id: string;
   name: string;
   color: string;
