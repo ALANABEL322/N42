@@ -236,16 +236,9 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
 
           <Button
             onClick={() => setIsModalOpen(true)}
-            className="mt-6 mr-2"
+            className="mt-6"
           >
             Ver resumen de identidad gráfica
-          </Button>
-
-          <Button
-            onClick={() => navigate('/dashboard/preview')}
-            className="mt-4 bg-primary hover:bg-primary/90"
-          >
-            Ver Previsualización
           </Button>
         </div>
 
@@ -371,22 +364,18 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
               <Button
                 variant="outline"
                 className="min-w-[120px]"
-                onClick={() => {
-                  setIsModalOpen(false);
-                  handlePreviousStep();
-                  }}
+                onClick={() => setIsModalOpen(false)}
               >
-                Anterior
+                Cerrar 
               </Button>
               <Button
-                className="min-w-[120px]"
-                onClick={() => {
+                  className="min-w-[120px]"
+                  onClick={() => {
                     setIsModalOpen(false);
-                    submitForm();
+                    navigate("/dashboard/preview");
                   }}
-                  disabled={!brandIdentity.colorPalette?.selectedPalette || !brandIdentity.colorPalette?.typography}
                 >
-                  Finalizar
+                  Generar Identidad Gráfica
                 </Button>
               </div>
             </div>
