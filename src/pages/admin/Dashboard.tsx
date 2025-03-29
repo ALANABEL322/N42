@@ -10,7 +10,8 @@ export default function AdminDashboard() {
   }
   return (
     <div className="flex min-h-screen bg-gray-100 mt-16">
-      <div className="flex-1 min-h-screen bg-white p-8 ml-0 xl:ml-64">        <div className="max-w-7xl mx-auto">
+      <div className="flex-1 min-h-screen bg-white p-8 ml-0 xl:ml-64">        
+        <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold mb-8">Dashboard Metrics</h1>
           <Metrics />
           <Button 

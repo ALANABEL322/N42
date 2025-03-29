@@ -17,7 +17,6 @@ export interface UserData {
   phone: string
 }
 
-// Mock data for users
 export const mockUsers: UserData[] = [
   {
     name: "Gregory House",
@@ -51,7 +50,6 @@ export const mockUsers: UserData[] = [
   }
 ]
 
-// Function to get mock users
 export function getMockUsers(): UserData[] {
   return mockUsers
 }
