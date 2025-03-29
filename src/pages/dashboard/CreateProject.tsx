@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ColorPaletteSelector } from "@/components/colorPaletteSelector/ColorPaletteSelector";
 import Modal from "react-modal";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useFormData } from "@/hooks/useFormData";
 
 Modal.setAppElement('#root');
@@ -44,6 +45,8 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
   const { formData, updateField, updateColorPalette } = useFormData();
   const [currentStep, setCurrentStep] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleNextStep = (data?: any) => {
     if (currentStep === 2 && data) {
@@ -204,9 +207,16 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
 
           <Button
             onClick={() => setIsModalOpen(true)}
-            className="mt-6"
+            className="mt-6 mr-2"
           >
             Ver resumen de identidad gráfica
+          </Button>
+
+          <Button
+            onClick={() => navigate('/dashboard/preview')}
+            className="mt-4 bg-primary hover:bg-primary/90"
+          >
+            Ver Previsualización
           </Button>
         </div>
 
@@ -328,7 +338,6 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                    </div>  
                 </div>
 
-                {/* Botones de Acción */}
                 <div className="flex justify-end space-x-4 pt-4">
               <Button
                 variant="outline"

@@ -32,7 +32,6 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
     return <Navigate to="/unauthorized" replace />
   }
 
-  // If no requiredRole is specified, redirect based on user type
   if (!requiredRole) {
     return <Navigate to={userType === 'admin' ? '/admin' : '/user'} replace />
   }

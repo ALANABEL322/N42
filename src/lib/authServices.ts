@@ -165,7 +165,6 @@ class AuthService {
   }
 
   logout(): void {
-    // Borramos todos los datos del usuario
     storageManager.clearAllUserData()
     
     const newState = { 
@@ -174,7 +173,6 @@ class AuthService {
       error: undefined 
     }
     
-    // Actualizamos el estado solo si hay cambios
     if (JSON.stringify(newState) !== JSON.stringify(this.state)) {
       this.state = newState
       this.dispatchAuthChange()
