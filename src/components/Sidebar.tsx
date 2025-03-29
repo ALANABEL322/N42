@@ -1,4 +1,4 @@
-import { User, Users, BarChart3, FileText } from 'lucide-react'
+import { User, Users, BarChart3, FileText, MessageSquare } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { authService } from '../lib/authServices'
 import { useEffect, useState } from 'react'
@@ -33,6 +33,11 @@ export default function Sidebar() {
       icon: FileText,
       label: 'Reports',
       path: '/admin/reports'
+    },
+    {
+      icon: MessageSquare,
+      label: 'Support Panel',
+      path: '/admin/support'
     }
   ]
 
