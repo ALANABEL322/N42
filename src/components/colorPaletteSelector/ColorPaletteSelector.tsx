@@ -1,64 +1,113 @@
-import { useState } from "react"
-import { Card, CardContent } from "../../components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select"
-import { Textarea } from "../../components/ui/textarea"
-import { Check } from "lucide-react"
-import { motion } from "framer-motion"
+import { useState, useEffect } from "react";
+import { Card, CardContent } from "../../components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
+import { Textarea } from "../../components/ui/textarea";
+import { Check } from "lucide-react";
+import { motion } from "framer-motion";
+import { Button } from "../ui/button";
+import { useFormData } from "../../hooks/useFormData";
 
 interface ColorPaletteSelectorProps {
-  onSubmit?: (data: PaletteSelectionData) => void
-  onSkip?: () => void
-  className?: string
+  onSubmit?: (data: PaletteSelectionData) => void;
+  onSkip?: () => void;
+  className?: string;
 }
 
 export interface PaletteSelectionData {
-  selectedPalette: string
-  typography: string
-  graphicDescription: string
+  selectedPalette: ColorOption;
+  typography: string;
+  graphicDescription: string;
 }
 
 interface ColorOption {
-  id: string
-  name: string
-  color: string
+  id: string;
+  name: string;
+  color: string;
 }
 
 export function ColorPaletteSelector({ onSubmit, onSkip, className }: ColorPaletteSelectorProps) {
+  const { formData, updateColorPalette } = useFormData();
+
   const colorOptions: ColorOption[] = [
-    { id: "ia", name: "IA", color: "#FFFFFF" },
+    { id: "ia", name: "IA", color: "#E77927" },
     { id: "cian", name: "Cian", color: "#E0F7FA" },
     { id: "magenta", name: "Magenta", color: "#FCE4EC" },
     { id: "amarillo", name: "Amarillo", color: "#FFFDE7" },
     { id: "negro", name: "Negro", color: "#0D0D0D" },
-  ]
+  ];
 
   const colorBorders: Record<string, string> = {
     ia: "#E65100",
     cian: "#26C6DA",
     magenta: "#EC407A",
     amarillo: "#FFD700",
-    negro: "#000000", 
-  }
+    negro: "#000000",
+  };
 
-  const [formData, setFormData] = useState<PaletteSelectionData>({
-    selectedPalette: "ia",
-    typography: "",
-    graphicDescription: "",
-  })
+  const [selectedColor, setSelectedColor] = useState<ColorOption>(() => {
+    if (!formData.colorPalette?.selectedPalette) {
+      return colorOptions[0];
+    }
+    
+    if (typeof formData.colorPalette.selectedPalette === 'string') {
+      //@ts-ignore
+      return colorOptions.find(opt => opt.id === formData.colorPalette?.selectedPalette) || colorOptions[0];
+    }
+    
+    return formData.colorPalette.selectedPalette;
+  });
 
-  const [selectedColor, setSelectedColor] = useState<string>("ia")
+  useEffect(() => {
+    if (formData.colorPalette?.selectedPalette) {
+      if (typeof formData.colorPalette.selectedPalette === 'string') {
+        //@ts-ignore
+        const foundColor = colorOptions.find(opt => opt.id === formData.colorPalette?.selectedPalette);
+        if (foundColor) setSelectedColor(foundColor);
+      } else {
+        setSelectedColor(formData.colorPalette.selectedPalette);
+      }
+    }
+  }, [formData.colorPalette]);
 
   const handleColorSelect = (colorId: string) => {
-    setSelectedColor(colorId)
-    setFormData((prev) => ({
-      ...prev,
-      selectedPalette: colorId,
-    }))
-  }
+    const selected = colorOptions.find(opt => opt.id === colorId) || colorOptions[0];
+    setSelectedColor(selected);
+    updateColorPalette({
+      selectedPalette: selected,
+      typography: formData.colorPalette?.typography || "",
+      graphicDescription: formData.colorPalette?.graphicDescription || ""
+    });
+  };
+
+  const handleTypographyChange = (value: string) => {
+    updateColorPalette({
+      selectedPalette: selectedColor,
+      typography: value,
+      graphicDescription: formData.colorPalette?.graphicDescription || ""
+    });
+  };
+
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    updateColorPalette({
+      selectedPalette: selectedColor,
+      typography: formData.colorPalette?.typography || "",
+      graphicDescription: e.target.value
+    });
+  };
 
   const handleSubmit = () => {
-    if (onSubmit) onSubmit(formData);
-  }
+    const submissionData = {
+      selectedPalette: selectedColor,
+      typography: formData.colorPalette?.typography || "",
+      graphicDescription: formData.colorPalette?.graphicDescription || ""
+    };
+    
+    if (onSubmit) {
+      onSubmit(submissionData);
+    }
+    
+    updateColorPalette(submissionData);
+  };
 
   return (
     <motion.div
@@ -87,72 +136,74 @@ export function ColorPaletteSelector({ onSubmit, onSkip, className }: ColorPalet
                       onClick={() => handleColorSelect(option.id)}
                       className={`
                         w-full h-24 rounded-lg flex items-center justify-center
-                        border-1 transition-all duration-200
-                        ${selectedColor === option.id ? "border-solid" : "border-transparent"}
+                        border transition-all duration-200
+                        ${selectedColor.id === option.id ? "border-solid" : "border-transparent"}
                         focus:outline-none focus:ring-1 focus:ring-offset-1
                       `}
                       style={{
                         backgroundColor: option.color,
-                        borderColor: selectedColor === option.id ? colorBorders[option.id] : 'transparent',
+                        borderColor: selectedColor.id === option.id ? colorBorders[option.id] : 'transparent',
+                        borderWidth: selectedColor.id === option.id ? '2px' : '0'
                       }}
                       aria-label={`Select ${option.name} color palette`}
                     >
-                      {selectedColor === option.id && (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          style={{ backgroundColor: colorBorders[option.id] }}
-                          className="absolute top-2 right-2 rounded-full p-0.5 text-white"
-                        >
-                          <Check className="h-3 w-3" />
-                        </motion.div>
+                      {selectedColor.id === option.id && (
+                        <Check className="w-6 h-6 text-white" />
                       )}
-                      <span className="text-gray-600 font-medium">{option.name}</span>
                     </button>
-                    <div className="text-center text-sm mt-1 text-gray-600">{option.name}</div>
+                    <p className="text-center mt-2 text-sm">{option.name}</p>
                   </motion.div>
                 ))}
               </div>
-
-              <p className="text-sm text-gray-600 mt-3">Haga click en los colores para poder editarlos</p>
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="typography" className="block text-sm font-medium">
-                ¿Qué tipografía le gustaría utilizar?
-              </label>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Tipografía</h3>
               <Select
-                value={formData.typography}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, typography: value }))}
+                value={formData.colorPalette?.typography}
+                onValueChange={handleTypographyChange}
               >
-                <SelectTrigger id="typography" className="w-full bg-white">
-                  <SelectValue placeholder="Ejemplo: comic sans o sugerir con IA" />
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona una tipografía" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="comic-sans">Comic Sans</SelectItem>
-                  <SelectItem value="helvetica">Helvetica</SelectItem>
                   <SelectItem value="roboto">Roboto</SelectItem>
                   <SelectItem value="montserrat">Montserrat</SelectItem>
-                  <SelectItem value="ia-suggestion">Sugerir con IA</SelectItem>
+                  <SelectItem value="poppins">Poppins</SelectItem>
+                  <SelectItem value="inter">Inter</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Descripción Gráfica</h3>
+              <Textarea
+                value={formData.colorPalette?.graphicDescription || ""}
+                onChange={handleDescriptionChange}
+                placeholder="Describe los elementos gráficos que deseas incluir..."
+                className="min-h-[100px]"
+              />
+            </div>
+
+            <div className="flex justify-end space-x-2">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={onSkip}
+              >
+                Omitir
+              </Button>
+              <Button 
+                type="button" 
+                onClick={handleSubmit}
+                disabled={!formData.colorPalette?.selectedPalette || !formData.colorPalette?.typography}
+              >
+                Continuar
+              </Button>
             </div>
           </div>
         </CardContent>
       </Card>
-
-      <div className="mt-6">
-        <h2 className="text-xl font-bold mb-4">
-          Describa detalladamente que elemento debe tener la identidad gráfica
-        </h2>
-        <Textarea
-          id="graphicDescription"
-          placeholder="Ejemplo: una silueta de una persona con sombrero levantando la mano."
-          className="min-h-[120px] bg-white"
-          value={formData.graphicDescription}
-          onChange={(e) => setFormData((prev) => ({ ...prev, graphicDescription: e.target.value }))}
-        />
-      </div>
     </motion.div>
-  )
+  );
 }
