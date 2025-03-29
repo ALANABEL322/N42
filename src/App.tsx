@@ -17,7 +17,7 @@ const Sidebar = lazy(() => import('./components/Sidebar'));
 const SidebarUser = lazy(() => import('./components/SidebarUser'));
 const Navbar = lazy(() => import('./components/Navbar'));
 const UserManagement = lazy(() => import('./pages/admin/users/index'));
-const Support = lazy(() => import('./pages/dashboard/Support'));
+const SupportAdmin = lazy(() => import('./components/admin/SupportAdmin'));
 const CreateProject = lazy(() => import('./pages/dashboard/CreateProject'));
 const Projects = lazy(() => import('./pages/dashboard/Projects'));
 // const Templates = lazy(() => import('./pages/dashboard/Templates'));
@@ -28,6 +28,7 @@ const BrandIdentityPreview = lazy(() => import('./components/brandIdentityPrevie
 // const ProjectDetails = lazy(() => import('./pages/dashboard/ProjectDetails'));
 const ProjectDetailsView = lazy(() => import('./pages/dashboard/ProjectDetailsView'));
 const QuestionSelector = lazy(() => import('./components/questionSelector/QuestionSelector'));
+const SupportUser = lazy(() => import('./pages/dashboard/SupportUser'));
 
 function useWindowDimensions() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -92,6 +93,7 @@ function App() {
                     <Route path="/admin/users" element={<UserManagement />} />
                     <Route path="/admin/reports" element={<ReportGenerator />} />
                     <Route path="/admin/metrics" element={<WebMetrics />} />
+                    <Route path="/admin/support" element={<SupportAdmin />} />
                   </Route>
                 </Route>
                 
@@ -100,10 +102,10 @@ function App() {
                   <Route element={<ProtectedLayout role="user" />}>
                     <Route path="/user" element={<LandingPage />} />
                     <Route path="/dashboard/createProject" element={<CreateProject />} />
+                    <Route path="/dashboard/support" element={<QuestionSelector />} />
+                    <Route path="/dashboard/support/question/:id" element={<SupportUser />} />
                     <Route path="/dashboard/projects" element={<Projects />} />
                     <Route path="/dashboard/projects/:id" element={<ProjectDetailsView />} />
-                    <Route path="/dashboard/support" element={<QuestionSelector />} />
-                    <Route path="/dashboard/question/:id" element={<Support />} />
                     <Route path="/dashboard/preview" element={<BrandIdentityPreview />} />
                   </Route>
                 </Route>
