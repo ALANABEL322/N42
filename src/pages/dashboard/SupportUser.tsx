@@ -97,7 +97,7 @@ export default function SupportUser() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg mt-20">
-      <div className="flex items-center mb-8 ">
+      <div className="flex items-center mb-8">
         <button
           onClick={() => navigate('/dashboard/support')}
           className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors mr-4"
@@ -106,17 +106,17 @@ export default function SupportUser() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
         </button>
-        <h1 className="text-3xl font-bold text-gray-800">{question.question_es}</h1>
+        <h1 className="text-3xl font-bold text-gray-800">{question.question}</h1>
       </div>
 
       <div className="space-y-6">
         <div className="p-6 bg-gray-50 rounded-lg">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Respuesta:</h2>
-          <p className="text-gray-600">{question.answer_es}</p>
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Answer:</h2>
+          <p className="text-gray-600">{question.answer}</p>
         </div>
 
         <div className="p-6 bg-gray-50 rounded-lg">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Pregunta Original:</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Original Question:</h2>
           <p className="text-gray-600">{question.question}</p>
         </div>
       </div>

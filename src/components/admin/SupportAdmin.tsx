@@ -16,14 +16,14 @@ export default function SupportAdmin() {
   }
 
   const handleDeleteMessage = (messageId: number) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este mensaje?')) {
+    if (window.confirm('Are you sure you want to delete this message?')) {
       deleteMessage(messageId)
     }
   }
 
   return (
     <div className="max-w-7xl mx-auto p-6 bg-white rounded-lg min-h-screen mt-20">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Panel de Soporte</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">Support Panel</h1>
       
       <div className="space-y-4">
         {messages.map((message) => (
@@ -37,64 +37,54 @@ export default function SupportAdmin() {
                 e.stopPropagation()
                 handleDeleteMessage(message.id)
               }}
-              className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
-              title="Eliminar mensaje"
+              className="absolute mt-2 top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
+              title="Delete message"
             >
               <Trash2 className="h-5 w-5" />
             </button>
-            <div className="flex justify-between items-start mb-2">
+            <div className="flex justify-between items-start mb-4">
               <div>
-                <h3 className="font-semibold">Usuario</h3>
-                <p className="text-gray-600">{new Date(message.timestamp).toLocaleString()}</p>
+                <h3 className="font-semibold text-gray-800">User Message</h3>
+                <p className="text-sm text-gray-500">
+                  {new Date(message.timestamp).toLocaleString()}
+                </p>
               </div>
-              <span className={`px-2 py-1 rounded-full text-xs mr-5 ${
-                message.adminResponse ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
-              }`}>
-                {message.adminResponse ? "Respondido" : "Pendiente"}
+              <span className="px-2 py-1 rounded-full bg-green-100 text-green-800 text-xs">
+                Responded
               </span>
             </div>
-            <p className="text-gray-800">{message.userMessage}</p>
-            {message.adminResponse && (
-              <div className="mt-4 p-3 bg-gray-50 rounded-md">
-                <h4 className="font-semibold mb-1">Respuesta del Administrador</h4>
-                <p className="text-gray-700">{message.adminResponse}</p>
+            <div className="space-y-4">
+              <div className="p-4 bg-white rounded-lg border border-gray-200">
+                <h4 className="font-medium text-gray-700 mb-2">Message Content:</h4>
+                <p className="text-gray-600">{message.userMessage}</p>
               </div>
-            )}
+              {message.adminResponse && (
+                <div className="p-4 bg-white rounded-lg border border-gray-200">
+                  <h4 className="font-medium text-gray-700 mb-2">Admin Response:</h4>
+                  <p className="text-gray-600">{message.adminResponse}</p>
+                </div>
+              )}
+              {!message.adminResponse && selectedMessage === message.id && (
+                <div className="p-4 bg-white rounded-lg border border-gray-200">
+                  <h4 className="font-medium text-gray-700 mb-2">Write Response:</h4>
+                  <textarea
+                    value={response}
+                    onChange={(e) => setResponse(e.target.value)}
+                    className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    rows={4}
+                  />
+                  <button
+                    onClick={() => handleResponse(message.id)}
+                    className="mt-4 w-full bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 transition-colors"
+                  >
+                    Send Response
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         ))}
       </div>
-
-      {selectedMessage && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h2 className="text-2xl font-bold mb-4">Responder Mensaje</h2>
-            <textarea
-              value={response}
-              onChange={(e) => setResponse(e.target.value)}
-              placeholder="Escribe tu respuesta aquí..."
-              className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-              rows={4}
-            />
-            <div className="flex justify-end space-x-2 mt-4">
-              <button
-                onClick={() => {
-                  setSelectedMessage(null)
-                  setResponse("")
-                }}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={() => handleResponse(selectedMessage)}
-                className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors"
-              >
-                Enviar Respuesta
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
