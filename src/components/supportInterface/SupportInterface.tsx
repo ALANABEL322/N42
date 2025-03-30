@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
 
-// Define the branding questions
 const brandingQuestions = [
   "How do I create a consistent brand identity?",
   "What elements should be included in my brand guidelines?",

@@ -7,12 +7,12 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ColorPaletteSelector } from "@/components/colorPaletteSelector/ColorPaletteSelector";
 import Modal from "react-modal";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useProjectsStore } from "@/store/projectsStore";
 import { useProjectDetailsStore } from "@/store/projectDetailsStore";
 import { useBrandIdentityStore } from "@/store/brandIdentityStore";
-import { ColorOption } from "@/components/colorPaletteSelector/ColorPaletteSelector";
 import { Project } from "@/types/project";
+import BrandIdentityLoader from "../../components/loading/BrandIdentityLoader";
 
 Modal.setAppElement('#root');
 
@@ -49,8 +49,8 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
   const { brandIdentity, setBrandIdentity } = useBrandIdentityStore();
   const [currentStep, setCurrentStep] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
   const addProject = useProjectsStore((state) => state.addProject);
   const setProjectDetails = useProjectDetailsStore((state) => state.setProjectDetails);
 
@@ -102,14 +102,23 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (currentStep === 3) {
-      submitForm();
+      setIsGenerating(true);
+      setTimeout(() => {
+        submitForm();
+        setIsGenerating(false);
+      }, 15000);
     } else {
       handleNextStep();
     }
   };
 
-  const handleIdentityOption = (option: string) => {
-    setBrandIdentity({ identityType: option });
+  const handleGenerateIdentity = () => {
+    setIsGenerating(true);
+    setIsModalOpen(false);
+    setTimeout(() => {
+      setIsGenerating(false);
+      navigate("/dashboard/preview");
+    }, 15000);
   };
 
   if (currentStep === 1) {
@@ -241,7 +250,7 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
             Ver resumen de identidad gráfica
           </Button>
         </div>
-
+        {isGenerating && <BrandIdentityLoader onComplete={() => setIsGenerating(false)} />}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -357,7 +366,7 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                         </div>
                       </div>
                     </motion.div>
-                   </div>  
+                  </div>  
                 </div>
 
                 <div className="flex justify-end space-x-4 pt-4">
@@ -370,12 +379,10 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
               </Button>
               <Button
                   className="min-w-[120px]"
-                  onClick={() => {
-                    setIsModalOpen(false);
-                    navigate("/dashboard/preview");
-                  }}
+                  onClick={handleGenerateIdentity}
+                  disabled={isGenerating}
                 >
-                  Generar Identidad Gráfica
+                  {isGenerating ? 'Generando...' : 'Generar Identidad Gráfica'}
                 </Button>
               </div>
             </div>
@@ -385,6 +392,5 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
       </>
     );
   }
-
-  return null;
-}
+  return null; 
+};
