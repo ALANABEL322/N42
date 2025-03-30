@@ -4,7 +4,6 @@ import { useSupportStore } from "../../store/supportStore"
 import { motion } from "framer-motion"
 import { Trash2 } from 'lucide-react'
 
-// Define the branding questions
 const brandingQuestions = [
   "How do I create a consistent brand identity?",
   "What elements should be included in my brand guidelines?",

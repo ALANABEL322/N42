@@ -37,21 +37,6 @@ export default function SidebarUser() {
       label: 'Mis Proyectos',
       path: '/dashboard/projects'
     },
-    // {
-    //   icon: PieChart,
-    //   label: 'Plantillas',
-    //   path: '/dashboard/templates'
-    // }
-    // {
-    //   icon: Settings,
-    //   label: 'Gestión de Proyectos',
-    //   path: '/dashboard/projectManagement'
-    // },
-    // {
-    //   icon: ReportIcon,
-    //   label: 'Informes',
-    //   path: '/dashboard/reports'
-    // },
     {
       icon: LifeBuoy,
       label: 'Soporte',
