@@ -6,6 +6,7 @@ import { Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "../ui/button";
 import { useFormData } from "../../hooks/useFormData";
+import IASelectorModal from "./IASelectorModal";
 
 interface ColorPaletteSelectorProps {
   onSubmit?: (data: PaletteSelectionData) => void;
@@ -28,8 +29,9 @@ export interface ColorOption {
 export function ColorPaletteSelector({ onSubmit, onSkip, className }: ColorPaletteSelectorProps) {
   const { formData, updateColorPalette } = useFormData();
 
+  const [isIAModalOpen, setIsIAModalOpen] = useState(false);
+
   const colorOptions: ColorOption[] = [
-    { id: "ia", name: "IA", color: "#E77927" },
     { id: "cian", name: "Cian", color: "#E0F7FA" },
     { id: "magenta", name: "Magenta", color: "#FCE4EC" },
     { id: "amarillo", name: "Amarillo", color: "#FFFDE7" },
@@ -37,7 +39,6 @@ export function ColorPaletteSelector({ onSubmit, onSkip, className }: ColorPalet
   ];
 
   const colorBorders: Record<string, string> = {
-    ia: "#E65100",
     cian: "#26C6DA",
     magenta: "#EC407A",
     amarillo: "#FFD700",
@@ -74,6 +75,21 @@ export function ColorPaletteSelector({ onSubmit, onSkip, className }: ColorPalet
     setSelectedColor(selected);
     updateColorPalette({
       selectedPalette: selected,
+      typography: formData.colorPalette?.typography || "",
+      graphicDescription: formData.colorPalette?.graphicDescription || ""
+    });
+  };
+
+  const handleIASelect = (color: string) => {
+    setIsIAModalOpen(false);
+    const aiPalette = {
+      id: "ia",
+      name: "IA",
+      color: color
+    };
+    setSelectedColor(aiPalette);
+    updateColorPalette({
+      selectedPalette: aiPalette,
       typography: formData.colorPalette?.typography || "",
       graphicDescription: formData.colorPalette?.graphicDescription || ""
     });
@@ -116,44 +132,60 @@ export function ColorPaletteSelector({ onSubmit, onSkip, className }: ColorPalet
       transition={{ duration: 0.5 }}
       className={`w-full max-w-3xl mx-auto ${className || ""}`}
     >
-      <Card className="bg-[#FFF5F5] border-0 shadow-sm">
+      <Card className="bg-[#FFF5F5] border-0 shadow-sm mt-20">
         <CardContent className="p-6">
           <div className="space-y-16">
             <div>
               <h2 className="text-xl font-bold mb-5">¿Qué paleta de colores le gustaría utilizar?</h2>
               <p className="text-sm text-muted-foreground mb-4">Estos mismos los puede editar después</p>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {colorOptions.map((option) => (
-                  <motion.div
-                    key={option.id}
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="relative"
+              <div className="space-y-6">
+                <div className="flex items-center justify-between p-4 bg-white rounded-lg">
+                  <div>
+                    <h3 className="font-semibold">Inteligencia Artificial</h3>
+                    <p className="text-sm text-muted-foreground">Crea una paleta única usando IA</p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsIAModalOpen(true)}
+                    className="bg-orange-50 hover:bg-orange-100"
                   >
-                    <button
-                      type="button"
-                      onClick={() => handleColorSelect(option.id)}
-                      className={`
-                        w-full h-24 rounded-lg flex items-center justify-center
-                        border transition-all duration-200
-                        ${selectedColor.id === option.id ? "border-solid" : "border-transparent"}
-                        focus:outline-none focus:ring-1 focus:ring-offset-1
-                      `}
-                      style={{
-                        backgroundColor: option.color,
-                        borderColor: selectedColor.id === option.id ? colorBorders[option.id] : 'transparent',
-                        borderWidth: selectedColor.id === option.id ? '2px' : '0'
-                      }}
-                      aria-label={`Select ${option.name} color palette`}
+                    Usar IA
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {colorOptions.map((option) => (
+                    <motion.div
+                      key={option.id}
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="relative"
                     >
-                      {selectedColor.id === option.id && (
-                        <Check className="w-6 h-6 text-white" />
-                      )}
-                    </button>
-                    <p className="text-center mt-2 text-sm">{option.name}</p>
-                  </motion.div>
-                ))}
+                      <button
+                        type="button"
+                        onClick={() => handleColorSelect(option.id)}
+                        className={`
+                          w-full h-24 rounded-lg flex items-center justify-center
+                          border transition-all duration-200
+                          ${selectedColor.id === option.id ? "border-solid" : "border-transparent"}
+                          focus:outline-none focus:ring-1 focus:ring-offset-1
+                        `}
+                        style={{
+                          backgroundColor: option.color,
+                          borderColor: selectedColor.id === option.id ? colorBorders[option.id] : 'transparent',
+                          borderWidth: selectedColor.id === option.id ? '2px' : '0'
+                        }}
+                        aria-label={`Select ${option.name} color palette`}
+                      >
+                        {selectedColor.id === option.id && (
+                          <Check className="w-6 h-6 text-white" />
+                        )}
+                      </button>
+                      <p className="text-center mt-2 text-sm">{option.name}</p>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -204,6 +236,12 @@ export function ColorPaletteSelector({ onSubmit, onSkip, className }: ColorPalet
           </div>
         </CardContent>
       </Card>
+
+      <IASelectorModal
+        isOpen={isIAModalOpen}
+        onClose={() => setIsIAModalOpen(false)}
+        onSelect={handleIASelect}
+      />
     </motion.div>
   );
 }
