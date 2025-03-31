@@ -233,7 +233,6 @@ export default function BrandIdentityPreview() {
           <h2 className="text-4xl font-bold mb-6 text-center mt-24">Selecciona una plantilla</h2>
           
           <div className="flex flex-col lg:flex-row lg:flex-wrap gap-6">
-            {/* Primeras dos cards */}
             <div className="flex flex-col md:flex-row gap-6 w-full lg:w-auto lg:flex-1">
               {PROJECT_TEMPLATES.slice(0, 2).map((template) => (
                 <motion.div 
@@ -345,6 +344,13 @@ export default function BrandIdentityPreview() {
                 </div>
               ))}
             </div>
+            <Button
+              onClick={handleSaveProject}
+              className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-md shadow-lg mt-4"
+              disabled={!selectedTemplate || !previewData.brandName || !previewData.selectedImage}
+            >
+              Guardar Proyecto
+            </Button>
           </motion.div>
         )}
 
@@ -505,13 +511,6 @@ export default function BrandIdentityPreview() {
             )}
           </div>
         </motion.div>
-        <Button
-          onClick={handleSaveProject}
-          className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-md shadow-lg"
-          disabled={!selectedTemplate || !previewData.brandName || !previewData.selectedImage}
-        >
-          Guardar Proyecto
-        </Button>
       </motion.div>
       <motion.div variants={item} className="fixed bottom-8 right-8 z-50">
       </motion.div>

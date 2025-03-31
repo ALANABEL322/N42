@@ -20,11 +20,10 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section */}
       <section className="container mx-auto px-4 py-12 md:py-20">
         <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
           <div className="flex-1 space-y-6">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mt-20 md:mt-10 lg:mt-0">
               Create Your Brand Identity with AI
             </h1>
             <p className="text-gray-700 md:text-lg">
@@ -51,12 +50,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features Section */}
+    
       <section className="container mx-auto px-4 py-12 md:py-20">
-        <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 mt-10 lg:mt-0">With Our Platform You Can</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-          {/* Feature 1 */}
+      <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 mt-20 md:mt-10 lg:mt-0">With Our Platform You Can</h2>        <div className="grid grid-cols-1 gap-8 md:gap-12">
           <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
             <div className="w-full md:w-1/2 h-48 md:h-64 relative rounded-lg overflow-hidden">
               <img src={Section1Img1} alt="Understand Your Audience" className="object-cover" />
@@ -69,7 +65,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Feature 2 */}
+       
           <div className="flex flex-col md:flex-row-reverse gap-6 items-center md:items-start">
             <div className="w-full md:w-1/2 h-48 md:h-64 relative rounded-lg overflow-hidden">
               <img src={Section1Img2} alt="Get Insights" className="object-cover" />
@@ -82,7 +78,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Feature 3 */}
+       
           <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
             <div className="w-full md:w-1/2 h-48 md:h-64 relative rounded-lg overflow-hidden">
               <img src={Section1Img3} alt="Design and Optimize" className="object-cover" />
@@ -97,7 +93,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Benefits Section */}
+     
       <Card className="container mx-auto px-4 py-12 md:py-20 bg-white shadow-lg rounded-xl overflow-hidden">
         <div className="flex flex-col md:flex-row">
           <div className="w-full md:w-1/2 pr-0 md:pr-6">

@@ -29,17 +29,17 @@ export default function SidebarUser() {
   const menuItems = [
     {
       icon: Package,
-      label: 'Crear Proyecto',
+      label: 'Create Project',
       path: '/dashboard/createProject'
     },
     {
       icon: Folder,
-      label: 'Mis Proyectos',
+      label: 'My Projects',
       path: '/dashboard/projects'
     },
     {
       icon: LifeBuoy,
-      label: 'Soporte',
+      label: 'Support',
       path: '/dashboard/support'
     }
   ]
@@ -49,9 +49,11 @@ export default function SidebarUser() {
       <div className="flex-1 flex flex-col mt-12">
         <div className="p-6">
           <div className="flex items-center space-x-3 mb-6">
-            <Users className="h-6 w-6 text-gray-400" />
+            <div className="p-2 bg-[#DB6B02] rounded-full flex items-center justify-center">
+              <Users className="h-6 w-6 text-white" />
+            </div>
             <span className="text-gray-800 font-medium">
-              User: {authState.user?.username || 'User'}
+              {authState.user?.username || 'User'}
             </span>
           </div>
 
