@@ -42,7 +42,7 @@ export default function QuestionSelector() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-white rounded-lg min-h-screen mt-20">
+    <div className="bg-white rounded-lg min-h-screen mt-20 w-full max-w-5xl mx-auto p-4 sm:p-6 lg:ml-[17rem] 2xl:ml-[30rem] flex-1">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">Support</h1>
         <p className="text-gray-600 mb-6">Select a question to view the detailed answer:</p>

@@ -11,6 +11,7 @@ import IASelectorModal from "./IASelectorModal";
 interface ColorPaletteSelectorProps {
   onSubmit?: (data: PaletteSelectionData) => void;
   onSkip?: () => void;
+  onPrevious?: () => void;
   className?: string;
 }
 
@@ -26,7 +27,7 @@ export interface ColorOption {
   color: string;
 }
 
-export function ColorPaletteSelector({ onSubmit, onSkip, className }: ColorPaletteSelectorProps) {
+export function ColorPaletteSelector({ onSubmit, onSkip, onPrevious, className }: ColorPaletteSelectorProps) {
   const { formData, updateColorPalette } = useFormData();
 
   const [isIAModalOpen, setIsIAModalOpen] = useState(false);
@@ -132,25 +133,25 @@ export function ColorPaletteSelector({ onSubmit, onSkip, className }: ColorPalet
       transition={{ duration: 0.5 }}
       className={`w-full max-w-3xl mx-auto ${className || ""}`}
     >
-      <Card className="bg-[#FFF5F5] border-0 shadow-sm mt-20">
+      <Card className="bg-white border-2  shadow-sm mt-28 mb-16">
         <CardContent className="p-6">
           <div className="space-y-16">
             <div>
-              <h2 className="text-xl font-bold mb-5">¿Qué paleta de colores le gustaría utilizar?</h2>
-              <p className="text-sm text-muted-foreground mb-4">Estos mismos los puede editar después</p>
+              <h2 className="text-xl font-bold mb-5 mt-5">Which color palette would you like to use?</h2>
+              <p className="text-sm text-muted-foreground mb-4">These can be edited later</p>
 
-              <div className="space-y-6">
-                <div className="flex items-center justify-between p-4 bg-white rounded-lg">
+              <div className="space-y-6 mt-11">
+                <div className="flex items-center justify-between p-4 bg-[#FFF5F5] rounded-lg">
                   <div>
-                    <h3 className="font-semibold">Inteligencia Artificial</h3>
-                    <p className="text-sm text-muted-foreground">Crea una paleta única usando IA</p>
+                    <h3 className="font-semibold my-2">Artificial Intelligence</h3>
+                    <p className="text-sm text-muted-foreground">Create a unique palette using AI</p>
                   </div>
                   <Button
                     variant="outline"
                     onClick={() => setIsIAModalOpen(true)}
                     className="bg-orange-50 hover:bg-orange-100"
                   >
-                    Usar IA
+                    Use AI
                   </Button>
                 </div>
 
@@ -160,7 +161,7 @@ export function ColorPaletteSelector({ onSubmit, onSkip, className }: ColorPalet
                       key={option.id}
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.98 }}
-                      className="relative"
+                      className="relative mt-11"
                     >
                       <button
                         type="button"
@@ -190,13 +191,13 @@ export function ColorPaletteSelector({ onSubmit, onSkip, className }: ColorPalet
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold mb-4">Tipografía</h3>
+              <h3 className="text-lg font-semibold mb-4">Typography</h3>
               <Select
                 value={formData.colorPalette?.typography}
                 onValueChange={handleTypographyChange}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecciona una tipografía" />
+                  <SelectValue placeholder="Select a typography" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="roboto">Roboto</SelectItem>
@@ -208,11 +209,11 @@ export function ColorPaletteSelector({ onSubmit, onSkip, className }: ColorPalet
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold mb-4">Descripción Gráfica</h3>
+              <h3 className="text-lg font-semibold mb-4">Graphic Description</h3>
               <Textarea
                 value={formData.colorPalette?.graphicDescription || ""}
                 onChange={handleDescriptionChange}
-                placeholder="Describe los elementos gráficos que deseas incluir..."
+                placeholder="Describe the graphic elements you want to include..."
                 className="min-h-[100px]"
               />
             </div>
@@ -221,16 +222,16 @@ export function ColorPaletteSelector({ onSubmit, onSkip, className }: ColorPalet
               <Button 
                 type="button" 
                 variant="outline" 
-                onClick={onSkip}
+                onClick={onPrevious}
               >
-                Omitir
+                Back
               </Button>
               <Button 
                 type="button" 
                 onClick={handleSubmit}
                 disabled={!formData.colorPalette?.selectedPalette || !formData.colorPalette?.typography}
               >
-                Continuar
+                Continue
               </Button>
             </div>
           </div>

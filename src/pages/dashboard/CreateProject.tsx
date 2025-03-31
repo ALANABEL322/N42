@@ -16,6 +16,7 @@ import BrandIdentityLoader from "../../components/loading/BrandIdentityLoader";
 
 Modal.setAppElement('#root');
 
+
 const customStyles = {
   overlay: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -41,7 +42,15 @@ const customStyles = {
 };
 
 interface ProjectCreationFormProps {
-  onSubmit?: (formData: any) => void;
+  onSubmit?: (formData: { 
+    selectedPalette: {
+      id: string;
+      name: string;
+      color: string;
+    };
+    typography: string;
+    graphicDescription: string;
+  }) => void;
   className?: string;
 }
 
@@ -54,7 +63,30 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
   const addProject = useProjectsStore((state) => state.addProject);
   const setProjectDetails = useProjectDetailsStore((state) => state.setProjectDetails);
 
-  const handleNextStep = (data?: any) => {
+
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isModalOpen]);
+
+
+  const handleNextStep = (data?: { 
+    selectedPalette: {
+      id: string;
+      name: string;
+      color: string;
+    };
+    typography: string;
+    graphicDescription: string;
+  }) => {
     if (currentStep === 2 && data) {
       setBrandIdentity({
         colorPalette: {
@@ -99,7 +131,7 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
     navigate(`/dashboard/projects/${project.id}`);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (currentStep === 3) {
       setIsGenerating(true);
@@ -123,15 +155,15 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
 
   if (currentStep === 1) {
     return (
-      <Card className="w-full max-w-3xl mx-auto mt-20">
+      <Card className="w-full max-w-3xl mx-auto mt-40 mb-28">
         <CardContent className="p-6">
           <form onSubmit={handleSubmit}>
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold mb-4">Paso 1: Información del Proyecto</h2>
+              <h2 className="text-2xl font-bold mb-14">Step 1: Project Information</h2>
               
               <div className="grid gap-4">
                 <div>
-                  <Label htmlFor="brandName">Nombre de la Marca</Label>
+                  <Label htmlFor="brandName">Brand Name</Label>
                   <Input
                     id="brandName"
                     value={brandIdentity.brandName}
@@ -150,7 +182,7 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                 </div>
                 
                 <div>
-                  <Label htmlFor="mission">Misión</Label>
+                  <Label htmlFor="mission">Mission</Label>
                   <Input
                     id="mission"
                     value={brandIdentity.mission}
@@ -159,7 +191,7 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                 </div>
                 
                 <div>
-                  <Label htmlFor="vision">Visión</Label>
+                  <Label htmlFor="vision">Vision</Label>
                   <Input
                     id="vision"
                     value={brandIdentity.vision}
@@ -168,7 +200,7 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                 </div>
                 
                 <div>
-                  <Label htmlFor="values">Valores</Label>
+                  <Label htmlFor="values">Values</Label>
                   <Input
                     id="values"
                     value={brandIdentity.values}
@@ -177,7 +209,7 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                 </div>
                 
                 <div>
-                  <Label htmlFor="objective">Objetivo</Label>
+                  <Label htmlFor="objective">Objective</Label>
                   <Input
                     id="objective"
                     value={brandIdentity.objective}
@@ -186,7 +218,7 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                 </div>
                 
                 <div>
-                  <Label htmlFor="targetAudience">Público Objetivo</Label>
+                  <Label htmlFor="targetAudience">Target Audience</Label>
                   <Input
                     id="targetAudience"
                     value={brandIdentity.targetAudience}
@@ -201,23 +233,20 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                     onValueChange={(value) => setBrandIdentity({ sector: value })}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Selecciona un sector" />
+                      <SelectValue placeholder="Select a sector" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="tecnologia">Tecnología</SelectItem>
-                      <SelectItem value="moda">Moda</SelectItem>
-                      <SelectItem value="alimentos">Alimentos</SelectItem>
-                      <SelectItem value="servicios">Servicios</SelectItem>
+                      <SelectItem value="technology">Technology</SelectItem>
+                      <SelectItem value="fashion">Fashion</SelectItem>
+                      <SelectItem value="food">Food</SelectItem>
+                      <SelectItem value="services">Services</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
               <div className="flex justify-end space-x-2">
-                <Button type="button" onClick={handlePreviousStep} disabled={currentStep === 1}>
-                  Anterior
-                </Button>
-                <Button type="submit">Continuar</Button>
+                <Button type="submit">Continue</Button>
               </div>
             </div>
           </form>
@@ -230,32 +259,170 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
     return (
       <ColorPaletteSelector
         onSubmit={(data) => handleNextStep(data)}
+        onPrevious={handlePreviousStep}
         className={className}
       />
     );
   }
   if (currentStep === 3) {
     return (
-      <>
-        <div className="container space-y-6 mt-20 text-center">
-          <h2 className="text-2xl font-bold">Paso 3: Identidad Gráfica</h2>
-          <p className="text-muted-foreground">
-            Revisa tu selección de identidad gráfica:
-          </p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-5xl mx-auto lg:ml-[17rem] 2xl:ml-[30rem]"
+        >
+          <div className="text-center mb-16 mt-20">
+            <motion.h2 
+              className="text-4xl font-bold text-gray-900 mb-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              Your Visual Identity is Ready
+            </motion.h2>
+            <motion.p
+              className="text-xl text-gray-600 max-w-2xl mx-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              We've created a unique identity for {brandIdentity.brandName || 'your brand'} based on your preferences
+            </motion.p>
+          </div>
 
-          <Button
-            onClick={() => setIsModalOpen(true)}
-            className="mt-6"
+          <motion.div 
+            className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
           >
-            Ver resumen de identidad gráfica
-          </Button>
-        </div>
+            {/* Preview Card */}
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden transform transition-all hover:scale-[1.02] duration-300">
+              <div className="p-8">
+                <h3 className="text-2xl font-bold text-gray-800 mb-6">Preview</h3>
+                <div className="flex justify-center mb-6">
+                  {brandIdentity.colorPalette?.selectedPalette && (
+                    <div className="relative">
+                      <div 
+                        className="w-40 h-40 rounded-full shadow-lg border-4 border-white"
+                        style={{ 
+                          backgroundColor: brandIdentity.colorPalette.selectedPalette.color,
+                          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+                        }}
+                      />
+                      <div className="absolute -bottom-4 -right-4 bg-white rounded-full p-2 shadow-md">
+                        <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gray-100">
+                          <span className="text-xs font-bold">
+                            {brandIdentity.colorPalette.selectedPalette.color}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="text-center">
+                  <h4 className="text-xl font-semibold mb-2" style={{
+                    fontFamily: brandIdentity.colorPalette?.typography === 'roboto' ? 'Roboto, sans-serif' :
+                    brandIdentity.colorPalette?.typography === 'montserrat' ? 'Montserrat, sans-serif' :
+                    brandIdentity.colorPalette?.typography === 'poppins' ? 'Poppins, sans-serif' :
+                    brandIdentity.colorPalette?.typography === 'inter' ? 'Inter, sans-serif' : 'inherit'
+                  }}>
+                    {brandIdentity.brandName || 'Brand Name'}
+                  </h4>
+                  <p className="text-gray-600">{brandIdentity.slogan || 'Your slogan here'}</p>
+                </div>
+              </div>
+            </div>
+  
+            {/* Details Card */}
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+              <div className="p-8">
+                <h3 className="text-2xl font-bold text-gray-800 mb-6">Identity Details</h3>
+                
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Color Palette</h4>
+                    <div className="flex items-center">
+                      <div 
+                        className="w-8 h-8 rounded-full mr-3 border border-gray-200"
+                        style={{ backgroundColor: brandIdentity.colorPalette?.selectedPalette?.color || '#6B7280' }}
+                      />
+                      <p className="font-medium">
+                        {brandIdentity.colorPalette?.selectedPalette?.name || 'Not specified'}
+                      </p>
+                    </div>
+                  </div>
+  
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Typography</h4>
+                    <p className="font-medium capitalize">
+                      {brandIdentity.colorPalette?.typography || 'Not specified'}
+                    </p>
+                  </div>
+  
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Sector</h4>
+                    <p className="font-medium capitalize">
+                      {brandIdentity.sector || 'Not specified'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+  
+          <motion.div
+            className="text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+          >
+            <div className="mb-8">
+              <p className="text-gray-600 mb-6">
+                Would you like to review all details before continuing?
+              </p>
+              <Button
+                onClick={() => setIsModalOpen(true)}
+                className="px-8 py-6 text-lg font-medium rounded-full from-primary to-primary-dark hover:from-primary-dark hover:to-primary transition-all shadow-lg hover:shadow-xl"
+              >
+                <span className="drop-shadow-sm">View Full Summary</span>
+              </Button>
+            </div>
+  
+            <div className="flex justify-center gap-4">
+              <Button
+                variant="outline"
+                onClick={handlePreviousStep}
+                className="px-6 py-3 border-2 rounded-full"
+              >
+                Go Back
+              </Button>
+              <Button
+                onClick={handleGenerateIdentity}
+                disabled={isGenerating}
+                className="px-6 py-3 rounded-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all"
+              >
+                {isGenerating ? (
+                  <span className="flex items-center">
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Generating...
+                  </span>
+                ) : 'Generate Identity'}
+              </Button>
+            </div>
+          </motion.div>
+        </motion.div>
         {isGenerating && <BrandIdentityLoader onComplete={() => setIsGenerating(false)} />}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-[9999]"
+          className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-[9999] overflow-y-auto"
           style={{ 
             display: isModalOpen ? 'block' : 'none',
             position: 'fixed',
@@ -276,10 +443,12 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-8 overflow-hidden z-[10001]"
+              className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden z-[10001]"
             >
-              <div className="flex justify-between items-center mb-8">
-                <h3 className="text-2xl font-bold">Resumen de Identidad Gráfica</h3>
+          <div className="overflow-y-auto flex-grow">
+            <div className="p-8">
+              <div className="flex justify-between items-center mb-8 sticky top-0 bg-white z-10 pb-4">
+                <h3 className="text-2xl font-bold">Graphic Identity Summary</h3>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -291,39 +460,39 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
 
               <div className="space-y-8">
                 <div className="bg-[#F6EEEE] rounded-xl shadow-sm p-6">
-                  <h3 className="text-xl font-bold mb-4">Información General del Proyecto</h3>
+                  <h3 className="text-xl font-bold mb-4">Project General Information</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">
                       <div>
-                        <p className="text-sm text-gray-500 uppercase tracking-wider">Nombre de la Marca</p>
-                        <p className="text-lg font-semibold">{brandIdentity.brandName || 'No especificado'}</p>
+                        <p className="text-sm text-gray-500 uppercase tracking-wider">Brand Name</p>
+                        <p className="text-lg font-semibold">{brandIdentity.brandName || 'Not specified'}</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-500 uppercase tracking-wider">Sector</p>
-                        <p className="text-lg font-semibold">{brandIdentity.sector || 'No especificado'}</p>
+                        <p className="text-lg font-semibold">{brandIdentity.sector || 'Not specified'}</p>
                       </div>
                     </div>
                     <div className="space-y-4">
                       <div>
-                        <p className="text-sm text-gray-500 uppercase tracking-wider">Público Objetivo</p>
-                        <p className="text-lg font-semibold">{brandIdentity.targetAudience || 'No especificado'}</p>
+                        <p className="text-sm text-gray-500 uppercase tracking-wider">Target Audience</p>
+                        <p className="text-lg font-semibold">{brandIdentity.targetAudience || 'Not specified'}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500 uppercase tracking-wider">Tipo de Identidad</p>
-                        <p className="text-lg font-semibold capitalize">{brandIdentity.identityType || 'No especificado'}</p>
+                        <p className="text-sm text-gray-500 uppercase tracking-wider">Vision</p>
+                        <p className="text-lg font-semibold capitalize">{brandIdentity.vision || 'Not specified'}</p>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="bg-white rounded-xl shadow-sm p-6">
-                  <h3 className="text-xl font-bold mb-4">Especificaciones de Diseño</h3>
+                  <h3 className="text-xl font-bold mb-4">Design Specifications</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <motion.div 
                       whileHover={{ scale: 1.02 }}
                       className="border rounded-lg p-4 flex flex-col items-center bg-[#F6EEEE]"
                     >
-                      <h4 className="font-semibold mb-4 text-center">Paleta de Colores</h4>
+                      <h4 className="font-semibold mb-4 text-center">Color Palette</h4>
                       {brandIdentity.colorPalette?.selectedPalette && (
                         <div className="flex flex-col items-center space-y-3">
                           <div 
@@ -331,11 +500,11 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                             style={{ backgroundColor: brandIdentity.colorPalette.selectedPalette.color }}
                           />
                           <div className="text-center">
-                            <p className="text-sm text-gray-500">Nombre</p>
+                            <p className="text-sm text-gray-500">Name</p>
                             <p className="font-medium">{brandIdentity.colorPalette.selectedPalette.name}</p>
                           </div>
                           <div className="text-center">
-                            <p className="text-sm text-gray-500">Código HEX</p>
+                            <p className="text-sm text-gray-500">HEX Code</p>
                             <p className="font-mono font-medium">
                               {brandIdentity.colorPalette.selectedPalette.color}
                             </p>
@@ -348,7 +517,7 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                       whileHover={{ scale: 1.02 }}
                       className="border rounded-lg p-4 flex flex-col items-center bg-[#F6EEEE]"
                     >
-                      <h4 className="font-semibold mb-4 text-center">Tipografía</h4>
+                      <h4 className="font-semibold mb-4 text-center">Typography</h4>
                       <div className="flex flex-col items-center space-y-3">
                         <div className="text-5xl font-sans" style={{
                           fontFamily: brandIdentity.colorPalette?.typography === 'roboto' ? 'Roboto' :
@@ -359,9 +528,9 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                           Aa
                         </div>
                         <div className="text-center">
-                          <p className="text-sm text-gray-500">Familia tipográfica</p>
+                          <p className="text-sm text-gray-500">Font Family</p>
                           <p className="font-medium capitalize">
-                            {brandIdentity.colorPalette?.typography || 'No seleccionada'}
+                            {brandIdentity.colorPalette?.typography || 'Not selected'}
                           </p>
                         </div>
                       </div>
@@ -369,27 +538,23 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                   </div>  
                 </div>
 
-                <div className="flex justify-end space-x-4 pt-4">
-              <Button
-                variant="outline"
-                className="min-w-[120px]"
-                onClick={() => setIsModalOpen(false)}
-              >
-                Cerrar 
-              </Button>
-              <Button
-                  className="min-w-[120px]"
-                  onClick={handleGenerateIdentity}
-                  disabled={isGenerating}
-                >
-                  {isGenerating ? 'Generando...' : 'Generar Identidad Gráfica'}
-                </Button>
+                
+                <div className="sticky bottom-0 bg-white border-t p-4 flex justify-end space-x-4">
+                  <Button
+                    variant="outline"
+                    className="min-w-[120px]"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    Close 
+                  </Button>
+                </div>
+               </div>
               </div>
-            </div>
+             </div>
             </motion.div>
           </motion.div>
         </motion.div>
-      </>
+      </div>
     );
   }
   return null; 

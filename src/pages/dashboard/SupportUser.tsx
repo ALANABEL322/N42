@@ -96,7 +96,7 @@ export default function SupportUser() {
   const question = brandingQuestions[questionIndex]
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg mt-20">
+    <div className="max-w-4xl h-screen mx-auto p-6 bg-white rounded-lg mt-[7rem] ">
       <div className="flex items-center mb-8">
         <button
           onClick={() => navigate('/dashboard/support')}
