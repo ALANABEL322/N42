@@ -35,7 +35,7 @@ export default function Navbar() {
             className="text-[#DB6A00] hover:text-[#DB6A00]"
           >
             <LogOut className="h-5 w-5 mr-2" />
-            Cerrar Sesión
+            Logout
           </Button>
         </div>
       </div>

@@ -1,28 +1,79 @@
 import { useState } from "react"
 import { useSupportStore } from "../../store/supportStore"
 import { Trash2 } from 'lucide-react'
+import { toast } from 'sonner'
+import { toastStyles } from '../ui/sonner'
+import { 
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogCancel, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+  AlertDialogTitle 
+} from '../ui/alert-dialog'
 
 export default function SupportAdmin() {
   const { messages, addAdminResponse, deleteMessage } = useSupportStore()
   const [selectedMessage, setSelectedMessage] = useState<number | null>(null)
   const [response, setResponse] = useState("")
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+  const [messageToDelete, setMessageToDelete] = useState<number | null>(null)
 
   const handleResponse = (messageId: number) => {
     if (response.trim()) {
       addAdminResponse(messageId, response)
       setResponse("")
       setSelectedMessage(null)
+      toast.success('Response sent successfully!', {
+        className: toastStyles.adminResponse.background,
+        duration: 5000,
+      })
     }
   }
 
   const handleDeleteMessage = (messageId: number) => {
-    if (window.confirm('Are you sure you want to delete this message?')) {
-      deleteMessage(messageId)
+    setOpenDeleteDialog(true)
+    setMessageToDelete(messageId)
+  }
+
+  const confirmDelete = () => {
+    if (messageToDelete !== null) {
+      deleteMessage(messageToDelete)
+      toast.success('Message deleted successfully!', {
+        className: toastStyles.adminResponse.background,
+        duration: 5000,
+      })
+      setOpenDeleteDialog(false)
+      setMessageToDelete(null)
     }
   }
 
+  const cancelDelete = () => {
+    setOpenDeleteDialog(false)
+    setMessageToDelete(null)
+  }
+
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-white rounded-lg min-h-screen mt-20">
+    <div className="max-w-5xl mx-auto p-6 bg-white rounded-lg min-h-screen mt-20 flex-1 lg:ml-[17rem] 2xl:ml-[30rem]">
+      <AlertDialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Message</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this message? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={cancelDelete}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-500 hover:bg-red-600">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Support Panel</h1>
       
       <div className="space-y-4">
@@ -49,8 +100,12 @@ export default function SupportAdmin() {
                   {new Date(message.timestamp).toLocaleString()}
                 </p>
               </div>
-              <span className="px-2 py-1 rounded-full bg-green-100 text-green-800 text-xs">
-                Responded
+              <span className={`px-2 py-1 rounded-full text-xs mr-6 mt-2 ${
+                message.adminResponse 
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-yellow-100 text-yellow-700'
+              }`}>
+                {message.adminResponse ? 'Responded' : 'Pending'}
               </span>
             </div>
             <div className="space-y-4">

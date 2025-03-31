@@ -20,14 +20,14 @@ export default function Sidebar() {
 
   const menuItems = [
     {
+      icon: Users,
+      label: 'Users',
+      path: '/admin/users'
+    },
+    {
       icon: BarChart3,
       label: 'Web Metrics',
       path: '/admin'
-    },
-    {
-      icon: Users,
-      label: 'User Management',
-      path: '/admin/users'
     },
     {
       icon: FileText,
@@ -46,9 +46,11 @@ export default function Sidebar() {
       <div className="flex-1 flex flex-col mt-12">
         <div className="p-6">
           <div className="flex items-center space-x-3 mb-6">
-            <User className="h-6 w-6 text-gray-400" />
+            <div className="p-2 bg-[#DB6B02] rounded-full flex items-center justify-center">
+              <User className="h-6 w-6 text-white" />
+            </div>
             <span className="text-gray-800 font-medium">
-              Admin: {authState.user?.username || 'User'}
+              {authState.user?.username || 'User'}
             </span>
           </div>
 

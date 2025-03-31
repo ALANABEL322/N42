@@ -3,6 +3,7 @@ import Navbar from './Navbar'
 import Sidebar from './Sidebar'
 import SidebarUser from './SidebarUser'
 import { authService } from '../lib/authServices'
+import { Toaster } from './ui/sonner'
 
 interface ProtectedLayoutProps {
   role: 'admin' | 'user'
@@ -17,6 +18,7 @@ export default function ProtectedLayout({ role }: ProtectedLayoutProps) {
 
   return (
     <div className="flex min-h-screen">
+      <Toaster />
       <Navbar />
       <div className="flex-1 flex">
         {role === 'admin' ? (

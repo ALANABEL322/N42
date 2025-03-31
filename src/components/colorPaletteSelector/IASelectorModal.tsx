@@ -119,7 +119,7 @@ export default function IASelectorModal({ isOpen, onClose, onSelect }: IASelecto
                   className="w-full bg-orange-500 hover:bg-orange-600"
                   disabled={isGenerating}
                 >
-                  {isGenerating ? 'Generating...' : 'Create color palette'}
+                  {isGenerating ? 'Generating...' : 'Create Color Palette'}
                 </Button>
 
                 <Button
@@ -127,7 +127,7 @@ export default function IASelectorModal({ isOpen, onClose, onSelect }: IASelecto
                   variant="outline"
                   className="w-full"
                 >
-                  Back
+                  Cancel
                 </Button>
               </div>
             </div>

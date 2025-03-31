@@ -3,6 +3,18 @@ import { useNavigate } from "react-router-dom"
 import { useSupportStore } from "../../store/supportStore"
 import { motion } from "framer-motion"
 import { Trash2 } from 'lucide-react'
+import { toast } from 'sonner'
+import { toastStyles } from '../ui/sonner'
+import { 
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogCancel, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+  AlertDialogTitle, 
+} from '../ui/alert-dialog'
 
 const brandingQuestions = [
   "How do I create a consistent brand identity?",
@@ -22,6 +34,8 @@ export default function QuestionSelector() {
   const [selectedQuestion, setSelectedQuestion] = useState<number | null>(null)
   const [message, setMessage] = useState("")
   const { addMessage, messages, deleteMessage } = useSupportStore()
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+  const [messageToDelete, setMessageToDelete] = useState<number | null>(null)
 
   const handleQuestionSelect = (index: number) => {
     setSelectedQuestion(index)
@@ -32,17 +46,54 @@ export default function QuestionSelector() {
     if (message.trim()) {
       addMessage(message)
       setMessage("")
+      toast.success('Message sent successfully!', {
+        className: toastStyles.userMessage.background,
+        duration: 5000,
+      })
     }
   }
 
   const handleDeleteMessage = (messageId: number) => {
-    if (window.confirm('Are you sure you want to delete this message?')) {
-      deleteMessage(messageId)
+    setOpenDeleteDialog(true)
+    setMessageToDelete(messageId)
+  }
+
+  const confirmDelete = () => {
+    if (messageToDelete !== null) {
+      deleteMessage(messageToDelete)
+      toast.success('Message deleted successfully!', {
+        className: toastStyles.userMessage.background,
+        duration: 5000,
+      })
+      setOpenDeleteDialog(false)
+      setMessageToDelete(null)
     }
+  }
+
+  const cancelDelete = () => {
+    setOpenDeleteDialog(false)
+    setMessageToDelete(null)
   }
 
   return (
     <div className="bg-white rounded-lg min-h-screen mt-20 w-full max-w-5xl mx-auto p-4 sm:p-6 lg:ml-[17rem] 2xl:ml-[30rem] flex-1">
+      <AlertDialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Message</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this message? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={cancelDelete}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-500 hover:bg-red-600">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">Support</h1>
         <p className="text-gray-600 mb-6">Select a question to view the detailed answer:</p>
