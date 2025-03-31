@@ -33,17 +33,17 @@ export function ColorPaletteSelector({ onSubmit, onSkip, onPrevious, className }
   const [isIAModalOpen, setIsIAModalOpen] = useState(false);
 
   const colorOptions: ColorOption[] = [
-    { id: "cian", name: "Cian", color: "#E0F7FA" },
+    { id: "cyan", name: "Cyan", color: "#E0F7FA" },
     { id: "magenta", name: "Magenta", color: "#FCE4EC" },
-    { id: "amarillo", name: "Amarillo", color: "#FFFDE7" },
-    { id: "negro", name: "Negro", color: "#0D0D0D" },
+    { id: "yellow", name: "Yellow", color: "#FFFDE7" },
+    { id: "black", name: "Black", color: "#0D0D0D" },
   ];
 
   const colorBorders: Record<string, string> = {
-    cian: "#26C6DA",
+    cyan: "#26C6DA",
     magenta: "#EC407A",
-    amarillo: "#FFD700",
-    negro: "#000000",
+    yellow: "#FFD700",
+    black: "#000000",
   };
 
   const [selectedColor, setSelectedColor] = useState<ColorOption>(() => {

@@ -9,85 +9,84 @@ export default function Footer() {
           <div className="flex flex-col items-start lg:col-span-1">
             <img
               src={footerImage}
-              alt="Footer Preferente"
+              alt="Footer Branding Platform"
               className="h-24 w-auto mb-4"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:col-span-3">
-      
+        
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800">Nosotros</h3>
+              <h3 className="text-lg font-semibold text-gray-800">About Us</h3>
               <ul className="space-y-3">
                 <li>
-                  <Link 
-                    to="/nosotros" 
-                    className="text-gray-600 hover:text-[#DB6A00] transition-colors block py-1"
+                  <span 
+                    className="text-gray-600 hover:text-[#DB6A00] transition-colors block py-1 cursor-default"
                   >
-                    Quiénes somos
-                  </Link>
+                    Who We Are
+                  </span>
                 </li>
                 <li>
-                  <Link 
-                    to="/equipo" 
-                    className="text-gray-600 hover:text-[#DB6A00] transition-colors block py-1"
+                  <span 
+                    className="text-gray-600 hover:text-[#DB6A00] transition-colors block py-1 cursor-default"
                   >
-                    Nuestro equipo
-                  </Link>
+                    Our Team
+                  </span>
                 </li>
               </ul>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800">Servicios</h3>
+              <h3 className="text-lg font-semibold text-gray-800">Services</h3>
               <ul className="space-y-3">
                 <li>
-                  <Link 
-                    to="/servicios" 
-                    className="text-gray-600 hover:text-[#DB6A00] transition-colors block py-1"
+                  <span 
+                    className="text-gray-600 hover:text-[#DB6A00] transition-colors block py-1 cursor-default"
                   >
-                    Nuestros servicios
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    to="/garantias" 
-                    className="text-gray-600 hover:text-[#DB6A00] transition-colors block py-1"
-                  >
-                    Garantías
-                  </Link>
+                    Our Services
+                  </span>
                 </li>
               </ul>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800">Legales</h3>
+              <h3 className="text-lg font-semibold text-gray-800">Contact</h3>
               <ul className="space-y-3">
                 <li>
-                  <Link 
-                    to="/legales" 
-                    className="text-gray-600 hover:text-[#DB6A00] transition-colors block py-1"
+                  <span 
+                    className="text-gray-600 hover:text-[#DB6A00] transition-colors block py-1 cursor-default"
                   >
-                    Términos y condiciones
-                  </Link>
+                    Contact Us
+                  </span>
                 </li>
                 <li>
-                  <Link 
-                    to="/privacidad" 
-                    className="text-gray-600 hover:text-[#DB6A00] transition-colors block py-1"
+                  <span 
+                    className="text-gray-600 hover:text-[#DB6A00] transition-colors block py-1 cursor-default"
                   >
-                    Política de privacidad
-                  </Link>
+                    Support
+                  </span>
                 </li>
               </ul>
             </div>
           </div>
         </div>
 
-        <div className="mt-16 border-t border-gray-200 text-center">
-          <p className="text-gray-500 text-sm mt-5">
-            &copy; {new Date().getFullYear()} Heratia. Todos los derechos reservados.
-          </p>
+        <div className="border-t border-gray-200 mt-12 pt-6">
+          <div className="flex justify-between items-center">
+            <p className="text-gray-600">  {new Date().getFullYear()} Branding Platform. All rights reserved.</p>
+            <div className="flex space-x-4">
+              <span 
+                className="text-gray-600 hover:text-[#DB6A00] transition-colors cursor-default"
+              >
+                Privacy Policy
+              </span>
+              <span 
+                className="text-gray-600 hover:text-[#DB6A00] transition-colors cursor-default"
+              >
+                Terms of Service
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

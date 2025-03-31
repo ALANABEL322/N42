@@ -104,10 +104,9 @@ export default function ReportGenerator() {
   }
 
   return (
-    <div className="container mx-auto px-4 mt-20 min-h-screen flex items-center justify-center ml-0 xl:ml-64">
+    <div className="mx-auto px-4 mt-20 min-h-screen flex items-center justify-center bg-white p-8 my-[7rem] max-w-5xl flex-1 lg:ml-[17rem] 2xl:ml-[30rem]">
       <div className="mx-auto px-4 py-6 max-w-7xl">
         <h1 className="text-5xl font-bold mb-6 text-center">Generate Reports</h1>
-
         <Card className="mb-8 bg-[#faf7f5] border-[#f0e9e5]">
           <CardContent className="p-6">
             <div className="grid md:grid-cols-1 gap-6">
