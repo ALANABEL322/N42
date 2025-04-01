@@ -385,7 +385,7 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
               </p>
               <Button
                 onClick={() => setIsModalOpen(true)}
-                className="px-8 py-6 text-lg font-medium rounded-full from-primary to-primary-dark hover:from-primary-dark hover:to-primary transition-all shadow-lg hover:shadow-xl"
+                className="px-8 py-6 text-lg font-medium from-primary to-primary-dark hover:from-primary-dark hover:to-primary transition-all shadow-lg hover:shadow-xl"
               >
                 <span className="drop-shadow-sm">View Full Summary</span>
               </Button>
@@ -395,14 +395,14 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
               <Button
                 variant="outline"
                 onClick={handlePreviousStep}
-                className="px-6 py-3 border-2 rounded-full"
+                className="px-6 py-3 border-2 "
               >
                 Go Back
               </Button>
               <Button
                 onClick={handleGenerateIdentity}
                 disabled={isGenerating}
-                className="px-6 py-3 rounded-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all"
+                className="px-6 py-3  bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all"
               >
                 {isGenerating ? (
                   <span className="flex items-center">
