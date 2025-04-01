@@ -105,8 +105,8 @@ const PROJECT_TEMPLATES: ProjectTemplate[] = [
     typography: TYPOGRAPHY_SAMPLES.Montserrat,
     mockupImages: [
       "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368",
-      "https://images.unsplash.com/photo-1532274402911-37e571bc172f",
-      "https://images.unsplash.com/photo-1476231687492-5750f3195933"
+      "https://images.unsplash.com/photo-1511497584788-876760111969",
+      "https://images.unsplash.com/photo-1448375240586-882707db888b"
     ]
   },
   {
