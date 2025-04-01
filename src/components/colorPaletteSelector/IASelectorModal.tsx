@@ -63,13 +63,13 @@ export default function IASelectorModal({ isOpen, onClose, onSelect }: IASelecto
   const handleSelectWithDelay = () => {
     setIsGenerating(true);
     
-    const toastId = toast.loading('Generando color con IA...');
+    const toastId = toast.loading('Generating color with AI...');
 
     setTimeout(() => {
       const randomColor = generateRandomColor();
       
       toast.dismiss(toastId);
-      toast.success('¡Color generado con éxito!');
+      toast.success('Color generated successfully!');
 
       onClose();
       onSelect(randomColor);
@@ -82,7 +82,7 @@ export default function IASelectorModal({ isOpen, onClose, onSelect }: IASelecto
       isOpen={isOpen}
       onRequestClose={onClose}
       style={customStyles}
-      contentLabel="IA Color Palette Selector"
+      contentLabel="AI Color Palette Selector"
     >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -93,9 +93,9 @@ export default function IASelectorModal({ isOpen, onClose, onSelect }: IASelecto
           <CardContent className="p-6">
             <div className="space-y-8">
               <div>
-                <h2 className="text-xl font-bold mb-4">Inteligencia Artificial</h2>
+                <h2 className="text-xl font-bold mb-4">Artificial Intelligence</h2>
                 <p className="text-sm text-muted-foreground mb-8">
-                  Utiliza la inteligencia artificial para generar color único y característico
+                  Use artificial intelligence to generate a unique and distinctive color palette
                 </p>
               </div>
 
@@ -119,7 +119,7 @@ export default function IASelectorModal({ isOpen, onClose, onSelect }: IASelecto
                   className="w-full bg-orange-500 hover:bg-orange-600"
                   disabled={isGenerating}
                 >
-                  {isGenerating ? 'Generando...' : 'Usar IA para crear color'}
+                  {isGenerating ? 'Generating...' : 'Create Color Palette'}
                 </Button>
 
                 <Button
@@ -127,7 +127,7 @@ export default function IASelectorModal({ isOpen, onClose, onSelect }: IASelecto
                   variant="outline"
                   className="w-full"
                 >
-                  Volver
+                  Cancel
                 </Button>
               </div>
             </div>

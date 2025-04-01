@@ -52,31 +52,31 @@ const TYPOGRAPHY_SAMPLES = {
     fontFamily: "'Roboto', sans-serif",
     googleFontLink: "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
     weights: ["300", "400", "500", "700"],
-    sampleText: "Innovación tecnológica con claridad y precisión"
+    sampleText: "Innovative technology with clarity and precision"
   },
   Montserrat: {
     name: "Montserrat",
     fontFamily: "'Montserrat', sans-serif",
     googleFontLink: "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap",
     weights: ["300", "400", "600", "700"],
-    sampleText: "Elegancia y sofisticación en cada detalle"
+    sampleText: "Elegance and sophistication in every detail"
   },
   Poppins: {
     name: "Poppins",
     fontFamily: "'Poppins', sans-serif",
     googleFontLink: "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap",
     weights: ["300", "400", "500", "600"],
-    sampleText: "Frescura natural con un toque moderno"
+    sampleText: "Fresh natural look with a modern touch"
   }
 };
 
 const PROJECT_TEMPLATES: ProjectTemplate[] = [
   {
     id: "minimal",
-    title: "Minimalista",
-    description: "Diseño limpio y elegante con un enfoque en la simplicidad",
+    title: "Minimalist",
+    description: "Clean and elegant design with a focus on simplicity",
     brandName: "Pure Design",
-    slogan: "Menos es más",
+    slogan: "Less is more",
     colorPalette: {
       cian: "#4285F4",
       magenta: "#DB4437",
@@ -92,10 +92,10 @@ const PROJECT_TEMPLATES: ProjectTemplate[] = [
   },
   {
     id: "wild",
-    title: "Selvático",
-    description: "Diseño inspirado en la naturaleza con colores vibrantes y orgánicos",
+    title: "Wild",
+    description: "Nature-inspired design with vibrant and organic colors",
     brandName: "Wild Nature",
-    slogan: "La belleza en estado salvaje",
+    slogan: "Beauty in the wild",
     colorPalette: {
       cian: "#008000",
       magenta: "#FF4500",
@@ -105,16 +105,16 @@ const PROJECT_TEMPLATES: ProjectTemplate[] = [
     typography: TYPOGRAPHY_SAMPLES.Montserrat,
     mockupImages: [
       "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368",
-      "https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5",
-      "https://images.unsplash.com/photo-1476231682828-37e571bc172f",
+      "https://images.unsplash.com/photo-1532274402911-37e571bc172f",
+      "https://images.unsplash.com/photo-1476231687492-5750f3195933"
     ]
   },
   {
     id: "cosmic",
-    title: "Cósmico",
-    description: "Diseño futurista con una paleta de colores inspirada en el universo",
+    title: "Cosmic",
+    description: "Futuristic design with a color palette inspired by the universe",
     brandName: "Cosmic Design",
-    slogan: "Inspirado por las estrellas",
+    slogan: "Inspired by the stars",
     colorPalette: {
       cian: "#1E3C72",
       magenta: "#9D50BB",
@@ -147,7 +147,7 @@ const DEFAULT_TEMPLATE: ProjectTemplate = {
     fontFamily: "'Inter', sans-serif",
     googleFontLink: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap",
     weights: ["300", "400", "500", "600"],
-    sampleText: "Texto de ejemplo para mostrar la tipografía"
+    sampleText: "Example text to show typography"
   },
   mockupImages: []
 };
@@ -230,10 +230,9 @@ export default function BrandIdentityPreview() {
         className="w-full max-w-5xl mx-auto p-4 sm:p-6 lg:ml-[17rem] 2xl:ml-[30rem]"
       >
         <motion.div variants={item} className="mb-12">
-          <h2 className="text-4xl font-bold mb-6 text-center mt-24">Selecciona una plantilla</h2>
+          <h2 className="text-4xl font-bold mb-6 text-center mt-24">Select a template</h2>
           
           <div className="flex flex-col lg:flex-row lg:flex-wrap gap-6">
-            {/* Primeras dos cards */}
             <div className="flex flex-col md:flex-row gap-6 w-full lg:w-auto lg:flex-1">
               {PROJECT_TEMPLATES.slice(0, 2).map((template) => (
                 <motion.div 
@@ -327,7 +326,7 @@ export default function BrandIdentityPreview() {
 
         {selectedTemplate && (
           <motion.div variants={item} className="mb-12">
-            <h2 className="text-2xl font-medium mb-4">Selecciona una imagen para tu proyecto</h2>
+            <h2 className="text-2xl font-medium mb-4">Select an image for your project</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {selectedTemplate.mockupImages.map((image, index) => (
                 <div
@@ -345,6 +344,13 @@ export default function BrandIdentityPreview() {
                 </div>
               ))}
             </div>
+            <Button
+              onClick={handleSaveProject}
+              className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-md shadow-lg mt-4"
+              disabled={!selectedTemplate || !previewData.brandName || !previewData.selectedImage}
+            >
+              Save Project
+            </Button>
           </motion.div>
         )}
 
@@ -372,7 +378,7 @@ export default function BrandIdentityPreview() {
             className="text-2xl font-medium mb-3 mt-20"
             style={{ fontFamily: previewData.typography?.fontFamily || selectedTemplate?.typography.fontFamily }}
           >
-            Paleta de colores utilizadas
+            Color palette used
           </h2>
           <div className="grid grid-cols-4 gap-3">
             {Object.entries(previewData.colorPalette || selectedTemplate?.colorPalette).map(([name, color]) => (
@@ -398,7 +404,7 @@ export default function BrandIdentityPreview() {
             className="text-2xl font-medium mb-3 mt-20"
             style={{ fontFamily: previewData.typography?.fontFamily || selectedTemplate?.typography.fontFamily }}
           >
-            Tipografía utilizada
+            Typography used
           </h2>
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <div className="flex flex-col md:flex-row gap-8">
@@ -431,7 +437,7 @@ export default function BrandIdentityPreview() {
                   className="text-lg font-semibold mb-4"
                   style={{ fontFamily: previewData.typography?.fontFamily || selectedTemplate?.typography.fontFamily }}
                 >
-                  Ejemplo de texto
+                  Example text
                 </h3>
                 <p 
                   className="text-lg leading-relaxed"
@@ -447,7 +453,7 @@ export default function BrandIdentityPreview() {
                 className="text-lg font-semibold mb-3"
                 style={{ fontFamily: previewData.typography?.fontFamily || selectedTemplate?.typography.fontFamily }}
               >
-              Pesos disponibles
+              Available weights
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {(previewData.typography?.weights || selectedTemplate?.typography.weights).map((weight) => (
@@ -459,8 +465,8 @@ export default function BrandIdentityPreview() {
                     fontWeight: parseInt(weight)
                   }}
                 >
-                  <p className="text-sm text-gray-600 mb-1">Peso {weight}</p>
-                  <p style={{ fontWeight: parseInt(weight) }}>El veloz murciélago hindú</p>
+                  <p className="text-sm text-gray-600 mb-1">Weight {weight}</p>
+                  <p style={{ fontWeight: parseInt(weight) }}>The quick brown fox</p>
                 </div>
               ))}
             </div>
@@ -505,13 +511,6 @@ export default function BrandIdentityPreview() {
             )}
           </div>
         </motion.div>
-        <Button
-          onClick={handleSaveProject}
-          className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-md shadow-lg"
-          disabled={!selectedTemplate || !previewData.brandName || !previewData.selectedImage}
-        >
-          Guardar Proyecto
-        </Button>
       </motion.div>
       <motion.div variants={item} className="fixed bottom-8 right-8 z-50">
       </motion.div>

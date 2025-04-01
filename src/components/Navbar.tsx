@@ -28,19 +28,14 @@ export default function Navbar() {
             onClick={handleLogoClick}
           />
         </div>
-        <div className="pr-4 flex items-center space-x-4">
-          {currentUser && (
-            <span className="text-gray-600">
-              {userType === 'admin' ? 'Administrador' : 'Usuario'}: {currentUser.username}
-            </span>
-          )}
+        <div className="pr-4">
           <Button
             variant="ghost"
             onClick={handleLogout}
-            className="text-[#DB6A00] hover:text-[#DB6A00] "
+            className="text-[#DB6A00] hover:text-[#DB6A00]"
           >
             <LogOut className="h-5 w-5 mr-2" />
-            Cerrar Sesión
+            Logout
           </Button>
         </div>
       </div>

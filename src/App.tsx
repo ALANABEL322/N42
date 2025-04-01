@@ -9,6 +9,7 @@ import SidebarAdminMobile from './components/SidebarAdminMobile';
 import { AnimatePresence } from 'framer-motion';
 import { useFooterProximity } from './hookUI/useFooterProximity';
 import { ProjectsProvider } from './contexts/ProjectsContext';
+import { Toaster } from './components/ui/sonner';
 
 const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
 const LandingPage = lazy(() => import('./pages/user/UserLandingPage'));
@@ -74,55 +75,58 @@ const ProtectedLayout = ({ role, children }: { role: 'admin' | 'user', children?
 
 function App() {
   return (
-    <Router>
-      <ProjectsProvider>
+    <ProjectsProvider>
+      <Router>
         <Suspense fallback={<LoadingSpinner />}>
-          <div className="flex flex-col min-h-screen bg-white">
-            <div className="flex-1">
-              <Routes>
-                {/* Public routes */}
-                <Route path="/login" element={<Login />} />
-                
-                {/* Admin routes */}
-                <Route element={<ProtectedRoute requiredRole="admin" />}>
-                  <Route element={<ProtectedLayout role="admin" />}>
-                    <Route path="/admin" element={<AdminDashboard />} />
-                    <Route path="/admin/users" element={<UserManagement />} />
-                    <Route path="/admin/reports" element={<ReportGenerator />} />
-                    <Route path="/admin/metrics" element={<WebMetrics />} />
-                    <Route path="/admin/support" element={<SupportAdmin />} />
+          <AnimatePresence mode="wait">
+            <div className="flex flex-col min-h-screen bg-white">
+              <div className="flex-1">
+                <Routes>
+                  {/* Public routes */}
+                  <Route path="/login" element={<Login />} />
+                  
+                  {/* Admin routes */}
+                  <Route element={<ProtectedRoute requiredRole="admin" />}>
+                    <Route element={<ProtectedLayout role="admin" />}>
+                      <Route path="/admin" element={<AdminDashboard />} />
+                      <Route path="/admin/users" element={<UserManagement />} />
+                      <Route path="/admin/reports" element={<ReportGenerator />} />
+                      <Route path="/admin/metrics" element={<WebMetrics />} />
+                      <Route path="/admin/support" element={<SupportAdmin />} />
+                    </Route>
                   </Route>
-                </Route>
-                
-                {/* User routes */}
-                <Route element={<ProtectedRoute requiredRole="user" />}>
-                  <Route element={<ProtectedLayout role="user" />}>
-                    <Route path="/user" element={<LandingPage />} />
-                    <Route path="/dashboard/createProject" element={<CreateProject />} />
-                    <Route path="/dashboard/support" element={<QuestionSelector />} />
-                    <Route path="/dashboard/support/question/:id" element={<SupportUser />} />
-                    <Route path="/dashboard/projects" element={<Projects />} />
-                    <Route path="/dashboard/projects/:id" element={<ProjectDetailsView />} />
-                    <Route path="/dashboard/preview" element={<BrandIdentityPreview />} />
+                  
+                  {/* User routes */}
+                  <Route element={<ProtectedRoute requiredRole="user" />}>
+                    <Route element={<ProtectedLayout role="user" />}>
+                      <Route path="/user" element={<LandingPage />} />
+                      <Route path="/dashboard/createProject" element={<CreateProject />} />
+                      <Route path="/dashboard/support" element={<QuestionSelector />} />
+                      <Route path="/dashboard/support/question/:id" element={<SupportUser />} />
+                      <Route path="/dashboard/projects" element={<Projects />} />
+                      <Route path="/dashboard/projects/:id" element={<ProjectDetailsView />} />
+                      <Route path="/dashboard/preview" element={<BrandIdentityPreview />} />
+                    </Route>
                   </Route>
-                </Route>
-                
-                {/* Default route */}
-                <Route path="/" element={<ProtectedRoute />}>
-                  <Route index element={
-                    <Navigate to={authService.getUserType() === 'admin' ? '/admin' : '/user'} replace />
-                  } />
-                </Route>
-                
-                {/* Catch-all route */}
-                <Route path="*" element={<Navigate to="/login" replace />} />
-              </Routes>
+                  
+                  {/* Default route */}
+                  <Route path="/" element={<ProtectedRoute />}>
+                    <Route index element={
+                      <Navigate to={authService.getUserType() === 'admin' ? '/admin' : '/user'} replace />
+                    } />
+                  </Route>
+                  
+                  {/* Catch-all route */}
+                  <Route path="*" element={<Navigate to="/login" replace />} />
+                </Routes>
+              </div>
+              <Toaster />
+              <Footer />
             </div>
-            <Footer />
-          </div>
+          </AnimatePresence>
         </Suspense>
-      </ProjectsProvider>
-    </Router>
+      </Router>
+    </ProjectsProvider>
   );
 }
 

@@ -3,13 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from "../../components/ui/card";
 
 const loadingMessages = [
-  "Analizando la esencia de tu marca...",
-  "Creando una paleta de colores única...",
-  "Definiendo la tipografía perfecta...",
-  "Generando elementos gráficos coherentes...",
-  "Creando una identidad visual consistente...",
-  "Optimizando la experiencia visual...",
-  "Generando la identidad gráfica final..."
+  "Analyzing your brand's essence...",
+  "Creating a unique color palette...",
+  "Defining the perfect typography...",
+  "Generating consistent graphics...",
+  "Creating a consistent visual identity...",
+  "Optimizing visual experience...",
+  "Generating final graphic identity..."
 ];
 
 const BrandIdentityLoader = ({ onComplete }: { onComplete: () => void }) => {
@@ -52,7 +52,7 @@ const BrandIdentityLoader = ({ onComplete }: { onComplete: () => void }) => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          Generando Identidad Gráfica
+          Generating Graphic Identity
         </motion.h2>
 
         <AnimatePresence mode="wait">

@@ -4,6 +4,7 @@ import {
   PieChart, 
   LogOut,
   BarChart2,
+  MessageSquare,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -16,8 +17,9 @@ export default function SidebarAdminMobile({ visible = true }: SidebarAdminMobil
 
   const menuItems = [
     { icon: Users, path: '/admin/users', tooltip: 'Usuarios', color: '#E65100' },
-    { icon: PieChart, path: '/admin/metrics', tooltip: 'Métricas', color: '#26C6DA' },
+    { icon: PieChart, path: '/admin', tooltip: 'Métricas', color: '#26C6DA' },
     { icon: BarChart2, path: '/admin/reports', tooltip: 'Reportes', color: '#EC407A' },
+    { icon: MessageSquare, path: '/admin/support', tooltip: 'Soporte', color: '#EC407A' },
     { icon: LogOut, path: '/login', tooltip: 'Cerrar sesión', color: '#EF5350' },
   ];
 

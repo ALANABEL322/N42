@@ -1,21 +1,69 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useProjectsStore } from '@/store/projectsStore';
 import { useNavigate } from 'react-router-dom';
+import { 
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogCancel, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+  AlertDialogTitle 
+} from '@/components/ui/alert-dialog';
 
 export default function Projects() {
   const projects = useProjectsStore((state) => state.getProjects());
   const removeProject = useProjectsStore((state) => state.removeProject);
   const navigate = useNavigate();
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState<string | null>(null);
 
   useEffect(() => {
-    document.title = 'Mis Proyectos - Branding Platform';
+    document.title = 'My Projects - Branding Platform';
   }, []);
 
+  const handleDeleteProject = (projectId: string) => {
+    setOpenDeleteDialog(true);
+    setProjectToDelete(projectId);
+  };
+
+  const confirmDelete = () => {
+    if (projectToDelete) {
+      removeProject(projectToDelete);
+      setOpenDeleteDialog(false);
+      setProjectToDelete(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setOpenDeleteDialog(false);
+    setProjectToDelete(null);
+  };
+
   return (
-    <div className="flex-1 min-h-screen bg-white p-8 mt-20">
+    <div className="flex-1 min-h-screen bg-white p-8 mt-20 mb-20">
+      <AlertDialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Project</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this project? This action cannot be undone.
+              All associated files and data will be permanently removed.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={cancelDelete}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-500 hover:bg-red-600">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className="max-w-7xl mx-auto w-full">
-        <h1 className="text-3xl font-bold mb-6">Mis Proyectos</h1>
+        <h1 className="text-3xl font-bold mb-6 ">My Projects</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project) => (
             <div key={project.id} className="bg-[#F6EEEE]  p-6 rounded-lg shadow">
@@ -28,7 +76,7 @@ export default function Projects() {
               <p className="text-gray-600 mb-6">{project.description}</p>
               
               <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-3 ">Paleta de colores</h3>
+                <h3 className="text-lg font-semibold mb-3 ">Color Palette</h3>
                 <div className="grid grid-cols-4 gap-3 ">
                   {Object.entries(project.colorPalette).map(([colorName, colorValue]) => (
                     <div key={colorName} className="flex flex-col items-center">
@@ -50,14 +98,14 @@ export default function Projects() {
                   className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md"
                   onClick={() => navigate(`/dashboard/projects/${project.id}`)}
                 >
-                  Ver Detalles
+                  View Details
                 </Button>
                 <Button 
                   className="text-white px-4 py-2 rounded-md bg-red-500 hover:bg-red-600"
-                  onClick={() => removeProject(project.id)}
-                  title="Eliminar proyecto"
+                  onClick={() => handleDeleteProject(project.id)}
+                  title="Delete project"
                 >
-                  Eliminar
+                  Delete
                 </Button>
               </div>
             </div>

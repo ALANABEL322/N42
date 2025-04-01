@@ -20,9 +20,6 @@ export default function SidebarUserMobile({ visible = true }: SidebarUserMobileP
   const menuItems = [
     { icon: Package, path: '/dashboard/createProject', tooltip: 'Crear Proyecto', color: '#E65100' },
     { icon: Folder, path: '/dashboard/projects', tooltip: 'Proyectos', color: '#26C6DA' },
-    { icon: PieChart, path: '/dashboard/templates', tooltip: 'Plantillas', color: '#EC407A' },
-    { icon: Settings, path: '/dashboard/projectManagement', tooltip: 'Gestión de Proyectos', color: '#FFD700' },
-    { icon: ReportIcon, path: '/dashboard/reports', tooltip: 'Informes', color: '#7E57C2' },
     { icon: LifeBuoy, path: '/dashboard/support', tooltip: 'Soporte', color: '#66BB6A' },
     { icon: LogOut, path: '/login', tooltip: 'Cerrar sesión', color: '#EF5350' },
   ];
