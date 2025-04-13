@@ -1,42 +1,36 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom'
-import { authService } from '../lib/authServices'
-import { ReactNode, useEffect, useState } from 'react'
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { ReactNode } from "react";
+import { useAuthStore, UserRole } from "../store/userStore";
 
 interface ProtectedRouteProps {
-  children?: ReactNode
-  requiredRole?: 'admin' | 'user'
+  children?: ReactNode;
+  requiredRole?: UserRole;
 }
 
 const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
-  const location = useLocation()
-  const [authState, setAuthState] = useState(authService.getState())
+  const location = useLocation();
+  const { isAuthenticated, role, isAdmin, isUser } = useAuthStore();
 
-  useEffect(() => {
-    const unsubscribe = authService.subscribe((state) => {
-      setAuthState(state)
-    })
-
-    return () => {
-      unsubscribe()
-    }
-  }, [])
-
-  const isAuthenticated = authState.isAuthenticated
-  const userType = authState.user?.userType
-
+  // Si no está autenticado, redirigir al login
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />
+    console.log("🔒 Usuario no autenticado, redirigiendo a login");
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (requiredRole && userType !== requiredRole) {
-    return <Navigate to="/unauthorized" replace />
+  // Si se requiere un rol específico y no coincide, redirigir
+  if (requiredRole && role !== requiredRole) {
+    console.log("⚠️ Rol requerido:", requiredRole, "Rol actual:", role);
+    return <Navigate to={isAdmin() ? "/admin" : "/user"} replace />;
   }
 
+  // Si no hay rol requerido, redirigir según el rol del usuario
   if (!requiredRole) {
-    return <Navigate to={userType === 'admin' ? '/admin' : '/user'} replace />
+    console.log("🔄 Redirigiendo según rol:", role);
+    return <Navigate to={isAdmin() ? "/admin" : "/user"} replace />;
   }
 
-  return children ? <>{children}</> : <Outlet />
-}
+  // Si todo está bien, renderizar los children o el Outlet
+  return children ? <>{children}</> : <Outlet />;
+};
 
-export default ProtectedRoute
+export default ProtectedRoute;
