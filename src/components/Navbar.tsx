@@ -1,21 +1,20 @@
-import { LogOut } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
-import { Button } from '../components/ui/button'
-import { authService } from "../lib/authServices"
+import { LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../components/ui/button";
+import { useAuthStore } from "../store/userStore";
 
 export default function Navbar() {
-  const navigate = useNavigate()
-  const userType = authService.getUserType()
-  const currentUser = authService.getCurrentUser()
+  const navigate = useNavigate();
+  const { isAuthenticated, role } = useAuthStore(); 
 
   const handleLogout = () => {
-    authService.logout()
-    navigate('/login')
-  }
+    useAuthStore.getState().logout()
+    navigate("/login");
+  };
 
   const handleLogoClick = () => {
-    navigate(userType === 'admin' ? '/admin' : '/user')
-  }
+    navigate(role === "admin" ? "/admin" : "/user");
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#F6EEEE] shadow-sm">
@@ -40,5 +39,5 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
-  )
+  );
 }
