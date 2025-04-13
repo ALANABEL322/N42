@@ -1,4 +1,3 @@
-import { authService } from '../../lib/authServices';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Button } from '../../components/ui/button';
 import HeroImage from '../../assets/imgLandingUser/HeroImage.png';
@@ -9,12 +8,13 @@ import section3Img1 from "../../assets/imgLandingUser/section3Img1.png"
 
 import { Star, DollarSign, ArrowUpDown, ThumbsUp } from "lucide-react"
 import { Card } from "../../components/ui/card"
+import { useAuthStore } from '@/store/userStore';
 
 export default function LandingPage() {
-  const userType = authService.getUserType();
+  const { isAuthenticated, isUser } = useAuthStore();
   const navigate = useNavigate();
 
-  if (userType !== 'user') {
+  if (!isAuthenticated || !isUser()) {
     return <Navigate to="/login" replace />;
   }
 
