@@ -3,12 +3,13 @@ import { persist } from "zustand/middleware";
 
 export type UserRole = "admin" | "user";
 
-interface User {
+export interface User {
   id: string;
   email: string;
   password?: string;
   username: string;
   role: UserRole;
+  isSystemAdmin?: boolean;
 }
 
 interface AuthState {
@@ -18,8 +19,7 @@ interface AuthState {
   isAdmin: () => boolean;
   isUser: () => boolean;
   role: UserRole | null;
-
-  // Acciones
+  loginSystemAdmin: () => void;
   login: (user: User) => void;
   registerLocalUser: (user: Omit<User, "id">) => User;
   logout: () => void;
@@ -33,14 +33,35 @@ export const useAuthStore = create<AuthState>()(
       localUsers: [],
       isAuthenticated: false,
       role: null,
-      isAdmin: () => get().user?.role === "admin",
+      isAdmin: () => {
+        const user = get().user;
+        return user?.role === "admin" || user?.email === "ADMIN123@gmail.com";
+      },
       isUser: () => get().user?.role === "user",
+      isSystemAdmin: () => get().user?.isSystemAdmin === true,
+
       login: (user) =>
         set({
           user,
           isAuthenticated: true,
           role: user.role,
         }),
+
+      loginSystemAdmin: () => {
+        const systemAdmin: User = {
+          id: "system-admin",
+          email: "ADMIN123@gmail.com",
+          username: "System Administrator",
+          role: "admin",
+          isSystemAdmin: true,
+        };
+
+        set({
+          user: systemAdmin,
+          isAuthenticated: true,
+          role: "admin",
+        });
+      },
 
       registerLocalUser: (newUser) => {
         const user = {
