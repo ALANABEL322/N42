@@ -1,4 +1,3 @@
-// lib/api.ts
 import axios from "axios";
 import { useAuthStore, UserRole } from "../store/userStore";
 
@@ -8,6 +7,18 @@ export const api = {
   async login(email: string, password: string) {
     try {
       console.log("🔐 Intento de login para:", email);
+      // Primero verificar si es el admin especial
+      if (email === "ADMIN123@gmail.com" && password === "ADMIN123") {
+        return {
+          success: true,
+          user: {
+            id: "system-admin",
+            email: "ADMIN123@gmail.com",
+            username: "System Administrator",
+            role: "admin",
+          },
+        };
+      }
 
       const localUser = useAuthStore.getState().findLocalUserByEmail(email);
 
@@ -31,9 +42,9 @@ export const api = {
         },
       });
 
-      console.log("📡 Respuesta de la API:", response.data);
+      console.log("📡 Respuesta de la API:", response?.data);
 
-      const users = response.data.data;
+      const users = response.data;
       if (!users || users.length === 0) {
         console.log("❌ Usuario no encontrado");
         return {
@@ -43,13 +54,12 @@ export const api = {
       }
 
       const userData = users[0];
-      const userAttributes = userData.attributes;
       const role: UserRole = email.includes("admin") ? "admin" : "user";
 
       const user = {
         id: userData.id,
-        email: userAttributes.email,
-        username: userAttributes.username || email.split("@")[0],
+        email: userData.email,
+        username: userData.username || email.split("@")[0],
         role,
       };
 
@@ -67,7 +77,7 @@ export const api = {
         error: "Error al intentar iniciar sesión",
       };
     }
-  },
+  }, // Ensure this comma is here
 
   async registerLocal(userData: {
     email: string;
