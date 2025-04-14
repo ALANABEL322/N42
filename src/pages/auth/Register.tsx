@@ -15,7 +15,6 @@ import {
 } from "../../components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../lib/api";
-import { useAuthStore } from "../../store/userStore";
 
 const registerSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -23,7 +22,7 @@ const registerSchema = z.object({
   username: z
     .string()
     .min(3, "El nombre de usuario debe tener al menos 3 caracteres"),
-  role: z.enum(["admin", "user"]),
+  role: z.literal("user"),
 });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
@@ -55,13 +54,6 @@ export default function Register() {
     setIsLoading(true);
     setError("");
 
-    if (data.role === "admin" && adminCode !== ADMIN_CODE) {
-      setError("Código de administrador inválido");
-      setIsLoading(false);
-      return;
-    }
-
-    // Registrar solo localmente
     const result = await api.registerLocal({
       email: data.email,
       password: data.password,
@@ -73,7 +65,7 @@ export default function Register() {
       const loginResult = await api.login(data.email, data.password);
 
       if (loginResult.success) {
-        navigate(data.role === "admin" ? "/login" : "/login");
+        navigate("/login");
       } else {
         setError("Error al iniciar sesión después del registro");
       }
@@ -138,12 +130,11 @@ export default function Register() {
             )}
           </div>
 
-          <div>
+          {/* <div>
+
             <Label htmlFor="role">Tipo de usuario</Label>
             <Select
-              onValueChange={(value) =>
-                setValue("role", value as "admin" | "user")
-              }
+              onValueChange={(value) => setValue("role", value as "user")}
               defaultValue="user"
             >
               <SelectTrigger className="mt-2">
@@ -154,20 +145,18 @@ export default function Register() {
                 <SelectItem value="user">Usuario</SelectItem>
               </SelectContent>
             </Select>
-          </div>
+          </div> */}
 
-          {selectedRole === "admin" && (
-            <div>
-              <Label htmlFor="adminCode">Código de administrador</Label>
-              <Input
-                id="adminCode"
-                type="password"
-                value={adminCode}
-                onChange={(e) => setAdminCode(e.target.value)}
-                className="mt-2"
-              />
-            </div>
-          )}
+          {/* <div>
+            <Label htmlFor="adminCode">Código de administrador</Label>
+            <Input
+              id="adminCode"
+              type="password"
+              value={adminCode}
+              onChange={(e) => setAdminCode(e.target.value)}
+              className="mt-2"
+            />
+          </div> */}
 
           <Button
             type="submit"
