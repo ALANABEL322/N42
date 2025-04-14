@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
@@ -14,35 +20,35 @@ import { useBrandIdentityStore } from "@/store/brandIdentityStore";
 import { Project } from "@/types/project";
 import BrandIdentityLoader from "../../components/loading/BrandIdentityLoader";
 
-Modal.setAppElement('#root');
-
+Modal.setAppElement("#root");
 
 const customStyles = {
   overlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     zIndex: 50,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-    maxWidth: '500px',
-    width: '90%',
-    padding: '2rem',
-    border: 'none',
-    borderRadius: '0.5rem',
-    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-  }
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    maxWidth: "500px",
+    width: "90%",
+    padding: "2rem",
+    border: "none",
+    borderRadius: "0.5rem",
+    boxShadow:
+      "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+  },
 };
 
 interface ProjectCreationFormProps {
-  onSubmit?: (formData: { 
+  onSubmit?: (formData: {
     selectedPalette: {
       id: string;
       name: string;
@@ -54,31 +60,33 @@ interface ProjectCreationFormProps {
   className?: string;
 }
 
-export default function CreateProject({ onSubmit, className }: ProjectCreationFormProps) {
+export default function CreateProject({
+  onSubmit,
+  className,
+}: ProjectCreationFormProps) {
   const { brandIdentity, setBrandIdentity } = useBrandIdentityStore();
   const [currentStep, setCurrentStep] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const navigate = useNavigate();
   const addProject = useProjectsStore((state) => state.addProject);
-  const setProjectDetails = useProjectDetailsStore((state) => state.setProjectDetails);
-
-
+  const setProjectDetails = useProjectDetailsStore(
+    (state) => state.setProjectDetails
+  );
 
   useEffect(() => {
     if (isModalOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
 
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [isModalOpen]);
 
-
-  const handleNextStep = (data?: { 
+  const handleNextStep = (data?: {
     selectedPalette: {
       id: string;
       name: string;
@@ -92,8 +100,8 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
         colorPalette: {
           selectedPalette: data.selectedPalette,
           typography: data.typography,
-          graphicDescription: data.graphicDescription
-        }
+          graphicDescription: data.graphicDescription,
+        },
       });
     }
     setCurrentStep((prev) => prev + 1);
@@ -114,16 +122,16 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
         cian: brandIdentity.colorPalette.selectedPalette.color || "#E0F7FA",
         magenta: brandIdentity.colorPalette.selectedPalette.color || "#FCE4EC",
         amarillo: brandIdentity.colorPalette.selectedPalette.color || "#FFFDE7",
-        negro: brandIdentity.colorPalette.selectedPalette.color || "#0D0D0D"
+        negro: brandIdentity.colorPalette.selectedPalette.color || "#0D0D0D",
       },
       typography: {
         name: "Roboto",
         fontFamily: "'Roboto', sans-serif",
         googleFontLink: "",
         weights: ["400", "500", "700"],
-        sampleText: ""
+        sampleText: "",
       },
-      mockupImage: "https://via.placeholder.com/800x600"
+      mockupImage: "https://via.placeholder.com/800x600",
     };
 
     addProject(project);
@@ -159,78 +167,96 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
         <CardContent className="p-6">
           <form onSubmit={handleSubmit}>
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold mb-14">Step 1: Project Information</h2>
-              
+              <h2 className="text-2xl font-bold mb-14">
+                Step 1: Project Information
+              </h2>
+
               <div className="grid gap-4">
                 <div>
                   <Label htmlFor="brandName">Brand Name</Label>
                   <Input
                     id="brandName"
                     value={brandIdentity.brandName}
-                    onChange={(e) => setBrandIdentity({ brandName: e.target.value })}
+                    onChange={(e) =>
+                      setBrandIdentity({ brandName: e.target.value })
+                    }
                     required
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="slogan">Slogan</Label>
                   <Input
                     id="slogan"
                     value={brandIdentity.slogan}
-                    onChange={(e) => setBrandIdentity({ slogan: e.target.value })}
+                    onChange={(e) =>
+                      setBrandIdentity({ slogan: e.target.value })
+                    }
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="mission">Mission</Label>
                   <Input
                     id="mission"
                     value={brandIdentity.mission}
-                    onChange={(e) => setBrandIdentity({ mission: e.target.value })}
+                    onChange={(e) =>
+                      setBrandIdentity({ mission: e.target.value })
+                    }
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="vision">Vision</Label>
                   <Input
                     id="vision"
                     value={brandIdentity.vision}
-                    onChange={(e) => setBrandIdentity({ vision: e.target.value })}
+                    onChange={(e) =>
+                      setBrandIdentity({ vision: e.target.value })
+                    }
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="values">Values</Label>
                   <Input
                     id="values"
                     value={brandIdentity.values}
-                    onChange={(e) => setBrandIdentity({ values: e.target.value })}
+                    onChange={(e) =>
+                      setBrandIdentity({ values: e.target.value })
+                    }
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="objective">Objective</Label>
                   <Input
                     id="objective"
                     value={brandIdentity.objective}
-                    onChange={(e) => setBrandIdentity({ objective: e.target.value })}
+                    onChange={(e) =>
+                      setBrandIdentity({ objective: e.target.value })
+                    }
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="targetAudience">Target Audience</Label>
                   <Input
                     id="targetAudience"
                     value={brandIdentity.targetAudience}
-                    onChange={(e) => setBrandIdentity({ targetAudience: e.target.value })}
+                    onChange={(e) =>
+                      setBrandIdentity({ targetAudience: e.target.value })
+                    }
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="sector">Sector</Label>
                   <Select
                     value={brandIdentity.sector}
-                    onValueChange={(value) => setBrandIdentity({ sector: value })}
+                    onValueChange={(value) =>
+                      setBrandIdentity({ sector: value })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select a sector" />
@@ -274,7 +300,7 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
           className="max-w-5xl mx-auto lg:ml-[17rem] 2xl:ml-[30rem]"
         >
           <div className="text-center mb-16 mt-20">
-            <motion.h2 
+            <motion.h2
               className="text-4xl font-bold text-gray-900 mb-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -288,11 +314,13 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              We've created a unique identity for {brandIdentity.brandName || 'your brand'} based on your preferences
+              We've created a unique identity for{" "}
+              {brandIdentity.brandName || "your brand"} based on your
+              preferences
             </motion.p>
           </div>
 
-          <motion.div 
+          <motion.div
             className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -301,15 +329,18 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
             {/* Preview Card */}
             <div className="bg-white rounded-2xl shadow-xl overflow-hidden transform transition-all hover:scale-[1.02] duration-300">
               <div className="p-8">
-                <h3 className="text-2xl font-bold text-gray-800 mb-6">Preview</h3>
+                <h3 className="text-2xl font-bold text-gray-800 mb-6">
+                  Preview
+                </h3>
                 <div className="flex justify-center mb-6">
                   {brandIdentity.colorPalette?.selectedPalette && (
                     <div className="relative">
-                      <div 
+                      <div
                         className="w-40 h-40 rounded-full shadow-lg border-4 border-white"
-                        style={{ 
-                          backgroundColor: brandIdentity.colorPalette.selectedPalette.color,
-                          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+                        style={{
+                          backgroundColor:
+                            brandIdentity.colorPalette.selectedPalette.color,
+                          boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
                         }}
                       />
                       <div className="absolute -bottom-4 -right-4 bg-white rounded-full p-2 shadow-md">
@@ -323,56 +354,82 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                   )}
                 </div>
                 <div className="text-center">
-                  <h4 className="text-xl font-semibold mb-2" style={{
-                    fontFamily: brandIdentity.colorPalette?.typography === 'roboto' ? 'Roboto, sans-serif' :
-                    brandIdentity.colorPalette?.typography === 'montserrat' ? 'Montserrat, sans-serif' :
-                    brandIdentity.colorPalette?.typography === 'poppins' ? 'Poppins, sans-serif' :
-                    brandIdentity.colorPalette?.typography === 'inter' ? 'Inter, sans-serif' : 'inherit'
-                  }}>
-                    {brandIdentity.brandName || 'Brand Name'}
+                  <h4
+                    className="text-xl font-semibold mb-2"
+                    style={{
+                      fontFamily:
+                        brandIdentity.colorPalette?.typography === "roboto"
+                          ? "Roboto, sans-serif"
+                          : brandIdentity.colorPalette?.typography ===
+                            "montserrat"
+                          ? "Montserrat, sans-serif"
+                          : brandIdentity.colorPalette?.typography === "poppins"
+                          ? "Poppins, sans-serif"
+                          : brandIdentity.colorPalette?.typography === "inter"
+                          ? "Inter, sans-serif"
+                          : "inherit",
+                    }}
+                  >
+                    {brandIdentity.brandName || "Brand Name"}
                   </h4>
-                  <p className="text-gray-600">{brandIdentity.slogan || 'Your slogan here'}</p>
+                  <p className="text-gray-600">
+                    {brandIdentity.slogan || "Your slogan here"}
+                  </p>
                 </div>
               </div>
             </div>
-  
+
             {/* Details Card */}
             <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
               <div className="p-8">
-                <h3 className="text-2xl font-bold text-gray-800 mb-6">Identity Details</h3>
-                
+                <h3 className="text-2xl font-bold text-gray-800 mb-6">
+                  Identity Details
+                </h3>
+
                 <div className="space-y-6">
                   <div>
-                    <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Color Palette</h4>
+                    <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">
+                      Color Palette
+                    </h4>
                     <div className="flex items-center">
-                      <div 
+                      <div
                         className="w-8 h-8 rounded-full mr-3 border border-gray-200"
-                        style={{ backgroundColor: brandIdentity.colorPalette?.selectedPalette?.color || '#6B7280' }}
+                        style={{
+                          backgroundColor:
+                            brandIdentity.colorPalette?.selectedPalette
+                              ?.color || "#6B7280",
+                        }}
                       />
                       <p className="font-medium">
-                        {brandIdentity.colorPalette?.selectedPalette?.name || 'Not specified'}
+                        {brandIdentity.colorPalette?.selectedPalette?.name ||
+                          "Not specified"}
                       </p>
                     </div>
                   </div>
-  
+
                   <div>
-                    <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Typography</h4>
+                    <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">
+                      Typography
+                    </h4>
                     <p className="font-medium capitalize">
-                      {brandIdentity.colorPalette?.typography || 'Not specified'}
+                      {brandIdentity.colorPalette?.typography ||
+                        "Not specified"}
                     </p>
                   </div>
-  
+
                   <div>
-                    <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Sector</h4>
+                    <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">
+                      Sector
+                    </h4>
                     <p className="font-medium capitalize">
-                      {brandIdentity.sector || 'Not specified'}
+                      {brandIdentity.sector || "Not specified"}
                     </p>
                   </div>
                 </div>
               </div>
             </div>
           </motion.div>
-  
+
           <motion.div
             className="text-center"
             initial={{ opacity: 0 }}
@@ -390,7 +447,7 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
                 <span className="drop-shadow-sm">View Full Summary</span>
               </Button>
             </div>
-  
+
             <div className="flex justify-center gap-4">
               <Button
                 variant="outline"
@@ -406,30 +463,50 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
               >
                 {isGenerating ? (
                   <span className="flex items-center">
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                     Generating...
                   </span>
-                ) : 'Generate Identity'}
+                ) : (
+                  "Generate Identity"
+                )}
               </Button>
             </div>
           </motion.div>
         </motion.div>
-        {isGenerating && <BrandIdentityLoader onComplete={() => setIsGenerating(false)} />}
+        {isGenerating && (
+          <BrandIdentityLoader onComplete={() => setIsGenerating(false)} />
+        )}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-[9999] overflow-y-auto"
-          style={{ 
-            display: isModalOpen ? 'block' : 'none',
-            position: 'fixed',
+          style={{
+            display: isModalOpen ? "block" : "none",
+            position: "fixed",
             top: 0,
             left: 0,
             right: 0,
-            bottom: 0
+            bottom: 0,
           }}
         >
           <motion.div
@@ -445,117 +522,172 @@ export default function CreateProject({ onSubmit, className }: ProjectCreationFo
               transition={{ duration: 0.3 }}
               className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden z-[10001]"
             >
-          <div className="overflow-y-auto flex-grow">
-            <div className="p-8">
-              <div className="flex justify-between items-center mb-8 sticky top-0 bg-white z-10 pb-4">
-                <h3 className="text-2xl font-bold">Graphic Identity Summary</h3>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  ✕
-                </Button>
-              </div>
-
-              <div className="space-y-8">
-                <div className="bg-[#F6EEEE] rounded-xl shadow-sm p-6">
-                  <h3 className="text-xl font-bold mb-4">Project General Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <div>
-                        <p className="text-sm text-gray-500 uppercase tracking-wider">Brand Name</p>
-                        <p className="text-lg font-semibold">{brandIdentity.brandName || 'Not specified'}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500 uppercase tracking-wider">Sector</p>
-                        <p className="text-lg font-semibold">{brandIdentity.sector || 'Not specified'}</p>
-                      </div>
-                    </div>
-                    <div className="space-y-4">
-                      <div>
-                        <p className="text-sm text-gray-500 uppercase tracking-wider">Target Audience</p>
-                        <p className="text-lg font-semibold">{brandIdentity.targetAudience || 'Not specified'}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500 uppercase tracking-wider">Vision</p>
-                        <p className="text-lg font-semibold capitalize">{brandIdentity.vision || 'Not specified'}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-xl shadow-sm p-6">
-                  <h3 className="text-xl font-bold mb-4">Design Specifications</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <motion.div 
-                      whileHover={{ scale: 1.02 }}
-                      className="border rounded-lg p-4 flex flex-col items-center bg-[#F6EEEE]"
+              <div className="overflow-y-auto flex-grow">
+                <div className="p-8">
+                  <div className="flex justify-between items-center mb-8 sticky top-0 bg-white z-10 pb-4">
+                    <h3 className="text-2xl font-bold">
+                      Graphic Identity Summary
+                    </h3>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setIsModalOpen(false)}
                     >
-                      <h4 className="font-semibold mb-4 text-center">Color Palette</h4>
-                      {brandIdentity.colorPalette?.selectedPalette && (
-                        <div className="flex flex-col items-center space-y-3">
-                          <div 
-                            className="w-20 h-20 rounded-full shadow-md border-2 border-gray-200"
-                            style={{ backgroundColor: brandIdentity.colorPalette.selectedPalette.color }}
-                          />
-                          <div className="text-center">
-                            <p className="text-sm text-gray-500">Name</p>
-                            <p className="font-medium">{brandIdentity.colorPalette.selectedPalette.name}</p>
+                      ✕
+                    </Button>
+                  </div>
+
+                  <div className="space-y-8">
+                    <div className="bg-[#F6EEEE] rounded-xl shadow-sm p-6">
+                      <h3 className="text-xl font-bold mb-4">
+                        Project General Information
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <div>
+                            <p className="text-sm text-gray-500 uppercase tracking-wider">
+                              Brand Name
+                            </p>
+                            <p className="text-lg font-semibold">
+                              {brandIdentity.brandName || "Not specified"}
+                            </p>
                           </div>
-                          <div className="text-center">
-                            <p className="text-sm text-gray-500">HEX Code</p>
-                            <p className="font-mono font-medium">
-                              {brandIdentity.colorPalette.selectedPalette.color}
+                          <div>
+                            <p className="text-sm text-gray-500 uppercase tracking-wider">
+                              Sector
+                            </p>
+                            <p className="text-lg font-semibold">
+                              {brandIdentity.sector || "Not specified"}
                             </p>
                           </div>
                         </div>
-                      )}
-                    </motion.div>
-
-                    <motion.div 
-                      whileHover={{ scale: 1.02 }}
-                      className="border rounded-lg p-4 flex flex-col items-center bg-[#F6EEEE]"
-                    >
-                      <h4 className="font-semibold mb-4 text-center">Typography</h4>
-                      <div className="flex flex-col items-center space-y-3">
-                        <div className="text-5xl font-sans" style={{
-                          fontFamily: brandIdentity.colorPalette?.typography === 'roboto' ? 'Roboto' :
-                          brandIdentity.colorPalette?.typography === 'montserrat' ? 'Montserrat' :
-                          brandIdentity.colorPalette?.typography === 'poppins' ? 'Poppins' :
-                          brandIdentity.colorPalette?.typography === 'inter' ? 'Inter' : 'inherit'
-                        }}>
-                          Aa
-                        </div>
-                        <div className="text-center">
-                          <p className="text-sm text-gray-500">Font Family</p>
-                          <p className="font-medium capitalize">
-                            {brandIdentity.colorPalette?.typography || 'Not selected'}
-                          </p>
+                        <div className="space-y-4">
+                          <div>
+                            <p className="text-sm text-gray-500 uppercase tracking-wider">
+                              Target Audience
+                            </p>
+                            <p className="text-lg font-semibold">
+                              {brandIdentity.targetAudience || "Not specified"}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-500 uppercase tracking-wider">
+                              Vision
+                            </p>
+                            <p className="text-lg font-semibold capitalize">
+                              {brandIdentity.vision || "Not specified"}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </motion.div>
-                  </div>  
-                </div>
+                    </div>
 
-                
-                <div className="sticky bottom-0 bg-white border-t p-4 flex justify-end space-x-4">
-                  <Button
-                    variant="outline"
-                    className="min-w-[120px]"
-                    onClick={() => setIsModalOpen(false)}
-                  >
-                    Close 
-                  </Button>
+                    <div className="bg-white rounded-xl shadow-sm p-6">
+                      <h3 className="text-xl font-bold mb-4">
+                        Design Specifications
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <motion.div
+                          whileHover={{ scale: 1.02 }}
+                          className="border rounded-lg p-4 flex flex-col items-center bg-[#F6EEEE]"
+                        >
+                          <h4 className="font-semibold mb-4 text-center">
+                            Color Palette
+                          </h4>
+                          {brandIdentity.colorPalette?.selectedPalette && (
+                            <div className="flex flex-col items-center space-y-3">
+                              <div
+                                className="w-20 h-20 rounded-full shadow-md border-2 border-gray-200"
+                                style={{
+                                  backgroundColor:
+                                    brandIdentity.colorPalette.selectedPalette
+                                      .color,
+                                }}
+                              />
+                              <div className="text-center">
+                                <p className="text-sm text-gray-500">Name</p>
+                                <p className="font-medium">
+                                  {
+                                    brandIdentity.colorPalette.selectedPalette
+                                      .name
+                                  }
+                                </p>
+                              </div>
+                              <div className="text-center">
+                                <p className="text-sm text-gray-500">
+                                  HEX Code
+                                </p>
+                                <p className="font-mono font-medium">
+                                  {
+                                    brandIdentity.colorPalette.selectedPalette
+                                      .color
+                                  }
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                        </motion.div>
+
+                        <motion.div
+                          whileHover={{ scale: 1.02 }}
+                          className="border rounded-lg p-4 flex flex-col items-center bg-[#F6EEEE]"
+                        >
+                          <h4 className="font-semibold mb-4 text-center">
+                            Typography
+                          </h4>
+                          <div className="flex flex-col items-center space-y-3">
+                            <div
+                              className="text-5xl font-sans"
+                              style={{
+                                fontFamily:
+                                  brandIdentity.colorPalette?.typography ===
+                                  "roboto"
+                                    ? "Roboto"
+                                    : brandIdentity.colorPalette?.typography ===
+                                      "montserrat"
+                                    ? "Montserrat"
+                                    : brandIdentity.colorPalette?.typography ===
+                                      "poppins"
+                                    ? "Poppins"
+                                    : brandIdentity.colorPalette?.typography ===
+                                      "inter"
+                                    ? "Inter"
+                                    : "inherit",
+                              }}
+                            >
+                              Aa
+                            </div>
+                            <div className="text-center">
+                              <p className="text-sm text-gray-500">
+                                Font Family
+                              </p>
+                              <p className="font-medium capitalize">
+                                {brandIdentity.colorPalette?.typography ||
+                                  "Not selected"}
+                              </p>
+                            </div>
+                          </div>
+                        </motion.div>
+                      </div>
+                    </div>
+
+                    <div className="sticky bottom-0 bg-white border-t p-4 flex justify-end space-x-4">
+                      <Button
+                        variant="outline"
+                        className="min-w-[120px]"
+                        onClick={() => setIsModalOpen(false)}
+                      >
+                        Close
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-               </div>
               </div>
-             </div>
             </motion.div>
           </motion.div>
         </motion.div>
       </div>
     );
   }
-  return null; 
-};
+  return null;
+}
