@@ -1,45 +1,46 @@
-import { User, Users, BarChart3, FileText, MessageSquare } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
-import { authService } from '../lib/authServices'
-import { useEffect, useState } from 'react'
+import { User, Users, BarChart3, FileText, MessageSquare } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useAuthStore } from "@/store/userStore";
 
 export default function Sidebar() {
-  const navigate = useNavigate()
-  const [authState, setAuthState] = useState(authService.getState())
+  const navigate = useNavigate();
+  const { user } = useAuthStore();
+  const [authState, setAuthState] = useState(user);
 
   useEffect(() => {
-    const unsubscribe = authService.subscribe((newState) => {
-      setAuthState(authService.getState())
-    })
-    return () => unsubscribe()
-  }, [])
+    const unsubscribe = useAuthStore.subscribe(() => {
+      setAuthState(useAuthStore.getState().user);
+    });
+    return () => unsubscribe();
+  }, []);
 
-  if (authState.user?.userType !== 'admin') {
-    return null
+  if (authState?.role !== "admin") {
+    return null;
   }
 
   const menuItems = [
     {
       icon: Users,
-      label: 'Users',
-      path: '/admin/users'
+      label: "Users",
+      path: "/admin/users",
     },
     {
       icon: BarChart3,
-      label: 'Web Metrics',
-      path: '/admin'
+      label: "Web Metrics",
+      path: "/admin",
     },
     {
       icon: FileText,
-      label: 'Reports',
-      path: '/admin/reports'
+      label: "Reports",
+      path: "/admin/reports",
     },
     {
       icon: MessageSquare,
-      label: 'Support Panel',
-      path: '/admin/support'
-    }
-  ]
+      label: "Support Panel",
+      path: "/admin/support",
+    },
+  ];
 
   return (
     <div className="fixed inset-y-0 left-0 w-64 bg-[#F6EEEE] border-r border-gray-200 flex flex-col">
@@ -50,7 +51,7 @@ export default function Sidebar() {
               <User className="h-6 w-6 text-white" />
             </div>
             <span className="text-gray-800 font-medium">
-              {authState.user?.username || 'User'}
+              {authState?.username || "User"}
             </span>
           </div>
 
@@ -69,5 +70,5 @@ export default function Sidebar() {
         </div>
       </div>
     </div>
-  )
+  );
 }
