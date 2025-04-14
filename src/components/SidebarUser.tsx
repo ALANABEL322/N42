@@ -1,6 +1,5 @@
-import { useNavigate } from 'react-router-dom'
-import { authService } from '../lib/authServices'
-import { useEffect, useState } from 'react'
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
   Folder,
   Package,
@@ -8,41 +7,43 @@ import {
   LifeBuoy,
   Users,
   PieChart,
-  FileText as ReportIcon
-} from 'lucide-react'
+  FileText as ReportIcon,
+} from "lucide-react";
+import { useAuthStore } from "@/store/userStore";
 
 export default function SidebarUser() {
-  const navigate = useNavigate()
-  const [authState, setAuthState] = useState(authService.getState())
+  const navigate = useNavigate();
+  const { user } = useAuthStore(); 
+  const [authState, setAuthState] = useState(user); 
 
   useEffect(() => {
-    const unsubscribe = authService.subscribe((newState) => {
-      setAuthState(authService.getState())
-    })
-    return () => unsubscribe()
-  }, [])
+    const unsubscribe = useAuthStore.subscribe(() => {
+      setAuthState(useAuthStore.getState().user);
+    });
+    return () => unsubscribe();
+  }, []);
 
-  if (authState.user?.userType !== 'user') {
-    return null
+  if (authState?.role !== "user") {
+    return null;
   }
 
   const menuItems = [
     {
       icon: Package,
-      label: 'Create Project',
-      path: '/dashboard/createProject'
+      label: "Create Project",
+      path: "/dashboard/createProject",
     },
     {
       icon: Folder,
-      label: 'My Projects',
-      path: '/dashboard/projects'
+      label: "My Projects",
+      path: "/dashboard/projects",
     },
     {
       icon: LifeBuoy,
-      label: 'Support',
-      path: '/dashboard/support'
-    }
-  ]
+      label: "Support",
+      path: "/dashboard/support",
+    },
+  ];
 
   return (
     <div className="fixed inset-y-0 left-0 w-64 bg-[#F6EEEE] border-r border-gray-200 flex flex-col">
@@ -53,7 +54,7 @@ export default function SidebarUser() {
               <Users className="h-6 w-6 text-white" />
             </div>
             <span className="text-gray-800 font-medium">
-              {authState.user?.username || 'User'}
+              {authState?.username || "User"}
             </span>
           </div>
 
@@ -72,5 +73,5 @@ export default function SidebarUser() {
         </div>
       </div>
     </div>
-  )
+  );
 }
