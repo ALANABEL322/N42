@@ -7,7 +7,6 @@ export const api = {
   async login(email: string, password: string) {
     try {
       console.log("🔐 Intento de login para:", email);
-      // Primero verificar si es el admin especial
       if (email === "ADMIN123@gmail.com" && password === "ADMIN123") {
         return {
           success: true,
@@ -77,7 +76,7 @@ export const api = {
         error: "Error al intentar iniciar sesión",
       };
     }
-  }, // Ensure this comma is here
+  },
 
   async registerLocal(userData: {
     email: string;
