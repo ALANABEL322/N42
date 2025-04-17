@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "../../components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
 import { Textarea } from "../../components/ui/textarea";
 import { Check } from "lucide-react";
 import { motion } from "framer-motion";
@@ -27,10 +33,21 @@ export interface ColorOption {
   color: string;
 }
 
-export function ColorPaletteSelector({ onSubmit, onSkip, onPrevious, className }: ColorPaletteSelectorProps) {
+export function ColorPaletteSelector({
+  onSubmit,
+  onSkip,
+  onPrevious,
+  className,
+}: ColorPaletteSelectorProps) {
   const { formData, updateColorPalette } = useFormData();
 
   const [isIAModalOpen, setIsIAModalOpen] = useState(false);
+  const [typography, setTypography] = useState(
+    formData.colorPalette?.typography || ""
+  );
+  const [graphicDescription, setGraphicDescription] = useState(
+    formData.colorPalette?.graphicDescription || ""
+  );
 
   const colorOptions: ColorOption[] = [
     { id: "cyan", name: "Cyan", color: "#E0F7FA" },
@@ -50,20 +67,26 @@ export function ColorPaletteSelector({ onSubmit, onSkip, onPrevious, className }
     if (!formData.colorPalette?.selectedPalette) {
       return colorOptions[0];
     }
-    
-    if (typeof formData.colorPalette.selectedPalette === 'string') {
+
+    if (typeof formData.colorPalette.selectedPalette === "string") {
       //@ts-ignore
-      return colorOptions.find(opt => opt.id === formData.colorPalette?.selectedPalette) || colorOptions[0];
+      return (
+        colorOptions.find(
+          (opt) => opt.id === formData.colorPalette?.selectedPalette
+        ) || colorOptions[0]
+      );
     }
-    
+
     return formData.colorPalette.selectedPalette;
   });
 
   useEffect(() => {
     if (formData.colorPalette?.selectedPalette) {
-      if (typeof formData.colorPalette.selectedPalette === 'string') {
+      if (typeof formData.colorPalette.selectedPalette === "string") {
         //@ts-ignore
-        const foundColor = colorOptions.find(opt => opt.id === formData.colorPalette?.selectedPalette);
+        const foundColor = colorOptions.find(
+          (opt) => opt.id === formData.colorPalette?.selectedPalette
+        );
         if (foundColor) setSelectedColor(foundColor);
       } else {
         setSelectedColor(formData.colorPalette.selectedPalette);
@@ -72,12 +95,13 @@ export function ColorPaletteSelector({ onSubmit, onSkip, onPrevious, className }
   }, [formData.colorPalette]);
 
   const handleColorSelect = (colorId: string) => {
-    const selected = colorOptions.find(opt => opt.id === colorId) || colorOptions[0];
+    const selected =
+      colorOptions.find((opt) => opt.id === colorId) || colorOptions[0];
     setSelectedColor(selected);
     updateColorPalette({
       selectedPalette: selected,
       typography: formData.colorPalette?.typography || "",
-      graphicDescription: formData.colorPalette?.graphicDescription || ""
+      graphicDescription: formData.colorPalette?.graphicDescription || "",
     });
   };
 
@@ -86,29 +110,42 @@ export function ColorPaletteSelector({ onSubmit, onSkip, onPrevious, className }
     const aiPalette = {
       id: "ia",
       name: "IA",
-      color: color
+      color: color,
     };
     setSelectedColor(aiPalette);
     updateColorPalette({
       selectedPalette: aiPalette,
       typography: formData.colorPalette?.typography || "",
-      graphicDescription: formData.colorPalette?.graphicDescription || ""
+      graphicDescription: formData.colorPalette?.graphicDescription || "",
     });
   };
 
   const handleTypographyChange = (value: string) => {
+    if (value === "default") return;
+
     updateColorPalette({
       selectedPalette: selectedColor,
       typography: value,
-      graphicDescription: formData.colorPalette?.graphicDescription || ""
+      graphicDescription: formData.colorPalette?.graphicDescription || "",
     });
   };
 
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const resetFields = () => {
     updateColorPalette({
       selectedPalette: selectedColor,
-      typography: formData.colorPalette?.typography || "",
-      graphicDescription: e.target.value
+      typography: "default",
+      graphicDescription: "",
+    });
+  };
+
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setGraphicDescription(e.target.value);
+    updateColorPalette({
+      selectedPalette: selectedColor,
+      typography: typography,
+      graphicDescription: e.target.value,
     });
   };
 
@@ -116,14 +153,38 @@ export function ColorPaletteSelector({ onSubmit, onSkip, onPrevious, className }
     const submissionData = {
       selectedPalette: selectedColor,
       typography: formData.colorPalette?.typography || "",
-      graphicDescription: formData.colorPalette?.graphicDescription || ""
+      graphicDescription: formData.colorPalette?.graphicDescription || "",
     };
-    
+
     if (onSubmit) {
       onSubmit(submissionData);
     }
-    
-    updateColorPalette(submissionData);
+
+    updateColorPalette({
+      selectedPalette: selectedColor,
+      typography: "",
+      graphicDescription: "",
+    });
+
+    const selectElement = document.querySelector(
+      '[role="combobox"]'
+    ) as HTMLElement;
+    if (selectElement) {
+      selectElement.click();
+      const firstOption = document.querySelector(
+        '[role="option"]'
+      ) as HTMLElement;
+      if (firstOption) {
+        firstOption.click();
+      }
+    }
+
+    const textareaElement = document.querySelector(
+      "textarea"
+    ) as HTMLTextAreaElement;
+    if (textareaElement) {
+      textareaElement.value = "";
+    }
   };
 
   return (
@@ -137,14 +198,22 @@ export function ColorPaletteSelector({ onSubmit, onSkip, onPrevious, className }
         <CardContent className="p-6">
           <div className="space-y-16">
             <div>
-              <h2 className="text-xl font-bold mb-5 mt-5">Which color palette would you like to use?</h2>
-              <p className="text-sm text-muted-foreground mb-4">These can be edited later</p>
+              <h2 className="text-xl font-bold mb-5 mt-5">
+                Which color palette would you like to use?
+              </h2>
+              <p className="text-sm text-muted-foreground mb-4">
+                These can be edited later
+              </p>
 
               <div className="space-y-6 mt-11">
                 <div className="flex items-center justify-between p-4 bg-[#FFF5F5] rounded-lg">
                   <div>
-                    <h3 className="font-semibold my-2">Artificial Intelligence</h3>
-                    <p className="text-sm text-muted-foreground">Create a unique palette using AI</p>
+                    <h3 className="font-semibold my-2">
+                      Artificial Intelligence
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Create a unique palette using AI
+                    </p>
                   </div>
                   <Button
                     variant="outline"
@@ -169,13 +238,21 @@ export function ColorPaletteSelector({ onSubmit, onSkip, onPrevious, className }
                         className={`
                           w-full h-24 rounded-lg flex items-center justify-center
                           border transition-all duration-200
-                          ${selectedColor.id === option.id ? "border-solid" : "border-transparent"}
+                          ${
+                            selectedColor.id === option.id
+                              ? "border-solid"
+                              : "border-transparent"
+                          }
                           focus:outline-none focus:ring-1 focus:ring-offset-1
                         `}
                         style={{
                           backgroundColor: option.color,
-                          borderColor: selectedColor.id === option.id ? colorBorders[option.id] : 'transparent',
-                          borderWidth: selectedColor.id === option.id ? '2px' : '0'
+                          borderColor:
+                            selectedColor.id === option.id
+                              ? colorBorders[option.id]
+                              : "transparent",
+                          borderWidth:
+                            selectedColor.id === option.id ? "2px" : "0",
                         }}
                         aria-label={`Select ${option.name} color palette`}
                       >
@@ -193,13 +270,16 @@ export function ColorPaletteSelector({ onSubmit, onSkip, onPrevious, className }
             <div>
               <h3 className="text-lg font-semibold mb-4">Typography</h3>
               <Select
-                value={formData.colorPalette?.typography}
+                value={formData.colorPalette?.typography || "default"}
                 onValueChange={handleTypographyChange}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a typography" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="default" disabled>
+                    Select a typography
+                  </SelectItem>
                   <SelectItem value="roboto">Roboto</SelectItem>
                   <SelectItem value="montserrat">Montserrat</SelectItem>
                   <SelectItem value="poppins">Poppins</SelectItem>
@@ -209,7 +289,9 @@ export function ColorPaletteSelector({ onSubmit, onSkip, onPrevious, className }
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold mb-4">Graphic Description</h3>
+              <h3 className="text-lg font-semibold mb-4">
+                Graphic Description
+              </h3>
               <Textarea
                 value={formData.colorPalette?.graphicDescription || ""}
                 onChange={handleDescriptionChange}
@@ -219,17 +301,17 @@ export function ColorPaletteSelector({ onSubmit, onSkip, onPrevious, className }
             </div>
 
             <div className="flex justify-end space-x-2">
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={onPrevious}
-              >
+              <Button type="button" variant="outline" onClick={onPrevious}>
                 Back
               </Button>
-              <Button 
-                type="button" 
+              <Button
+                type="button"
                 onClick={handleSubmit}
-                disabled={!formData.colorPalette?.selectedPalette || !formData.colorPalette?.typography}
+                disabled={
+                  !formData.colorPalette?.selectedPalette ||
+                  !formData.colorPalette?.typography ||
+                  formData.colorPalette?.typography === "default"
+                }
               >
                 Continue
               </Button>

@@ -86,6 +86,31 @@ export default function CreateProject({
     };
   }, [isModalOpen]);
 
+  const resetForm = () => {
+    setBrandIdentity({
+      brandName: "",
+      slogan: "",
+      mission: "",
+      vision: "",
+      values: "",
+      objective: "",
+      targetAudience: "",
+      sector: "",
+      colorPalette: {
+        selectedPalette: {
+          id: "",
+          name: "",
+          color: "",
+        },
+        typography: "",
+        graphicDescription: "",
+      },
+    });
+    setCurrentStep(1);
+    setIsModalOpen(false);
+    setIsGenerating(false);
+  };
+
   const handleNextStep = (data?: {
     selectedPalette: {
       id: string;
@@ -136,6 +161,7 @@ export default function CreateProject({
 
     addProject(project);
     setProjectDetails(project);
+    resetForm();
     navigate(`/dashboard/projects/${project.id}`);
   };
 
@@ -157,6 +183,7 @@ export default function CreateProject({
     setIsModalOpen(false);
     setTimeout(() => {
       setIsGenerating(false);
+      resetForm();
       navigate("/dashboard/preview");
     }, 15000);
   };
