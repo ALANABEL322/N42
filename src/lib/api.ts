@@ -3,7 +3,45 @@ import { useAuthStore, UserRole } from "../store/userStore";
 
 const API_URL = "http://34.238.122.213:1337/api";
 
+interface ApiUser {
+  id: number;
+  username: string;
+  email: string;
+  nombre: string;
+  apellido: string;
+  telefono: string;
+  rol: string;
+  avatar: string;
+  ciudad: string;
+  pais: string;
+}
+
 export const api = {
+  async getUsers() {
+    try {
+      const response = await axios.get<ApiUser[]>(`${API_URL}/users`);
+      return {
+        success: true,
+        users: response.data.map((user) => ({
+          id: user.id,
+          name: `${user.nombre} ${user.apellido}`,
+          email: user.email,
+          role: user.rol,
+          phone: user.telefono,
+          avatar: user.avatar,
+          location: `${user.ciudad}, ${user.pais}`,
+        })),
+      };
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      return {
+        success: false,
+        error: "Error al obtener usuarios",
+        users: [],
+      };
+    }
+  },
+
   async login(email: string, password: string) {
     try {
       console.log("🔐 Intento de login para:", email);

@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { fetchBrandingTemplates } from "@/lib/template";
 import { Image } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 interface Typography {
   name: string;
@@ -44,11 +45,19 @@ export default function BrandIdentityPreview() {
   const navigate = useNavigate();
   const [selectedTemplate, setSelectedTemplate] =
     useState<BrandingTemplate | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadTemplates = async () => {
-      const templates = await fetchBrandingTemplates();
-      setTemplate(templates);
+      setIsLoading(true);
+      try {
+        const templates = await fetchBrandingTemplates();
+        setTemplate(templates);
+      } catch (error) {
+        console.error("Error loading templates:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     loadTemplates();
   }, [setTemplate]);
@@ -72,8 +81,7 @@ export default function BrandIdentityPreview() {
         googleFontLink: template.typography.googleFontLink,
         weights: template.typography.weights,
         sampleText:
-          template.typography.sampleText ||
-          "Ejemplo de texto para mostrar la tipografía",
+          template.description || "Ejemplo de texto para mostrar la tipografía",
       },
       mockupImages: template.mockupImages,
       selectedImage: template.mockupImages[0],
@@ -84,15 +92,16 @@ export default function BrandIdentityPreview() {
     if (
       !previewData.selectedTemplate ||
       !previewData.brandName ||
-      !previewData.selectedImage
+      !previewData.selectedImage ||
+      !selectedTemplate
     ) {
       return;
     }
 
     const project = {
       id: Date.now().toString(),
-      title: previewData.brandName,
-      description: `Proyecto de branding para ${previewData.brandName}`,
+      title: selectedTemplate.title,
+      description: selectedTemplate.description,
       brandName: previewData.brandName,
       slogan: previewData.slogan,
       colorPalette: previewData.colorPalette,
@@ -129,44 +138,62 @@ export default function BrandIdentityPreview() {
             Select a template
           </h2>
 
-          <div className="flex flex-col lg:flex-row lg:flex-wrap gap-6">
-            <div className="flex flex-col md:flex-row gap-6 w-full lg:w-auto">
-              {template.map((template: BrandingTemplate) => (
-                <motion.div
-                  key={template.id}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full md:w-1/2 lg:w-full"
-                >
-                  <Card
-                    className={`cursor-pointer transition-all outline-none ${
-                      previewData.selectedTemplate === template.id
-                        ? "ring-primary"
-                        : "hover:shadow-md"
-                    }`}
-                    onClick={() => handleTemplateSelect(template)}
-                  >
-                    <CardContent className="p-6">
-                      <div className="flex flex-col items-center text-center">
-                        <div
-                          className="w-full aspect-video bg-gradient-to-br mb-4 rounded-lg"
-                          style={{
-                            background: `linear-gradient(135deg, ${template.colorPalette.cian} 0%, ${template.colorPalette.magenta} 50%, ${template.colorPalette.amarillo} 100%)`,
-                          }}
-                        />
-                        <h3 className="text-xl font-semibold mb-2">
-                          {template.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground mb-3">
-                          {template.description}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center min-h-[400px]">
+              <Loader2 className="h-12 w-12 animate-spin text-orange-500" />
+              <p className="mt-4 text-lg text-gray-600">Loading templates...</p>
             </div>
-          </div>
+          ) : template.length === 0 ? (
+            <div className="flex flex-col items-center justify-center min-h-[400px]">
+              <p className="text-lg text-gray-600">No templates available</p>
+              <Button
+                onClick={() => window.location.reload()}
+                className="mt-4"
+                variant="outline"
+              >
+                Retry
+              </Button>
+            </div>
+          ) : (
+            <div className="flex flex-col lg:flex-row lg:flex-wrap gap-6">
+              <div className="flex flex-col md:flex-row gap-6 w-full lg:w-auto">
+                {template.map((template: BrandingTemplate) => (
+                  <motion.div
+                    key={template.id}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full md:w-1/2 lg:w-full"
+                  >
+                    <Card
+                      className={`cursor-pointer transition-all outline-none ${
+                        previewData.selectedTemplate === template.id
+                          ? "ring-primary"
+                          : "hover:shadow-md"
+                      }`}
+                      onClick={() => handleTemplateSelect(template)}
+                    >
+                      <CardContent className="p-6">
+                        <div className="flex flex-col items-center text-center">
+                          <div
+                            className="w-full aspect-video bg-gradient-to-br mb-4 rounded-lg"
+                            style={{
+                              background: `linear-gradient(135deg, ${template.colorPalette.cian} 0%, ${template.colorPalette.magenta} 50%, ${template.colorPalette.amarillo} 100%)`,
+                            }}
+                          />
+                          <h3 className="text-xl font-semibold mb-2">
+                            {template.title}
+                          </h3>
+                          <p className="text-sm text-muted-foreground mb-3">
+                            {template.description}
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          )}
         </motion.div>
 
         {selectedTemplate && (
@@ -220,7 +247,7 @@ export default function BrandIdentityPreview() {
                   fontFamily: previewData.typography?.name,
                 }}
               >
-                {previewData.brandName || selectedTemplate?.brandName}
+                {selectedTemplate?.title || "Select a template"}
               </div>
               <div
                 className="text-muted-foreground text-center max-w-md"
@@ -228,7 +255,8 @@ export default function BrandIdentityPreview() {
                   fontFamily: previewData.typography?.name,
                 }}
               >
-                {previewData.slogan || selectedTemplate?.slogan}
+                {selectedTemplate?.description ||
+                  "Choose a template to see its description"}
               </div>
             </CardContent>
           </Card>

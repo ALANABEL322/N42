@@ -23,9 +23,28 @@ export const fetchBrandingTemplates = async (): Promise<BrandingTemplate[]> => {
     const response = await axios.post<{ autos: BrandingTemplate[] }>(
       "http://34.238.122.213:1337/api/open-ai/42"
     );
-    return response.data?.autos;
+
+    if (!response.data?.autos) {
+      throw new Error("Invalid response format");
+    }
+
+    return response.data.autos;
   } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        console.error(
+          "Server error:",
+          error.response.status,
+          error.response.data
+        );
+        throw new Error(`Server error: ${error.response.status}`);
+      }
+      if (error.request) {
+        console.error("Network error:", error);
+        throw new Error("Network error. Please check your connection.");
+      }
+    }
     console.error("Error fetching branding templates:", error);
-    return [];
+    throw new Error("Failed to load templates. Please try again.");
   }
 };
