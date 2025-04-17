@@ -6,13 +6,6 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Card } from "../../components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../lib/api";
 
@@ -129,35 +122,6 @@ export default function Register() {
               </p>
             )}
           </div>
-
-          {/* <div>
-
-            <Label htmlFor="role">Tipo de usuario</Label>
-            <Select
-              onValueChange={(value) => setValue("role", value as "user")}
-              defaultValue="user"
-            >
-              <SelectTrigger className="mt-2">
-                <SelectValue placeholder="Selecciona el tipo de usuario" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="admin">Administrador</SelectItem>
-                <SelectItem value="user">Usuario</SelectItem>
-              </SelectContent>
-            </Select>
-          </div> */}
-
-          {/* <div>
-            <Label htmlFor="adminCode">Código de administrador</Label>
-            <Input
-              id="adminCode"
-              type="password"
-              value={adminCode}
-              onChange={(e) => setAdminCode(e.target.value)}
-              className="mt-2"
-            />
-          </div> */}
-
           <Button
             type="submit"
             className="w-full bg-[#DB6A00] hover:bg-[#DB6A00]/90 text-white"

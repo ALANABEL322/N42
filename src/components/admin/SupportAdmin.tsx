@@ -56,7 +56,6 @@ export default function SupportAdmin() {
     setMessageToDelete(null);
   };
 
-  // Filtrar mensajes sin respuesta
   const pendingMessages = messages.filter((message) => !message.adminResponse);
 
   return (
