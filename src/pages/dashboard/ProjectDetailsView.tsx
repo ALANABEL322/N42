@@ -15,16 +15,6 @@ export default function ProjectDetailsView() {
     useProjectDetailsStore();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (project) {
-      setProjectDetails(project);
-      document.title = `${project.brandName} - Project Details`;
-    }
-    return () => {
-      clearProjectDetails();
-    };
-  }, [project, setProjectDetails, clearProjectDetails]);
-
   if (!project) {
     return (
       <div className="flex-1 min-h-screen bg-white p-8">
@@ -66,10 +56,13 @@ export default function ProjectDetailsView() {
 
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-semibold mb-2">Title</h3>
-                  <p className="text-gray-600">{project.title}</p>
+                  <h3 className="font-semibold mb-2">Brand Name</h3>
+                  <p className="text-gray-600">{project.brandName}</p>
                 </div>
-
+                <div>
+                  <h3 className="font-semibold mb-2">Slogan</h3>
+                  <p className="text-gray-600">{project.slogan}</p>
+                </div>
                 <div>
                   <h3 className="font-semibold mb-2">Description</h3>
                   <p className="text-gray-600">{project.description}</p>
