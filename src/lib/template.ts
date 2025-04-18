@@ -27,6 +27,7 @@ export const fetchBrandingTemplates = async (): Promise<BrandingTemplate[]> => {
     if (!response.data?.autos) {
       throw new Error("Invalid response format");
     }
+    console.log("response", response, response.data?.autos);
 
     return response.data.autos;
   } catch (error) {

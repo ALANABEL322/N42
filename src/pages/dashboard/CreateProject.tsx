@@ -86,30 +86,17 @@ export default function CreateProject({
     };
   }, [isModalOpen]);
 
-  const resetForm = () => {
-    setBrandIdentity({
-      brandName: "",
-      slogan: "",
-      mission: "",
-      vision: "",
-      values: "",
-      objective: "",
-      targetAudience: "",
-      sector: "",
-      colorPalette: {
-        selectedPalette: {
-          id: "",
-          name: "",
-          color: "",
-        },
-        typography: "",
-        graphicDescription: "",
-      },
-    });
+  const resetLocalFormState = () => {
     setCurrentStep(1);
     setIsModalOpen(false);
     setIsGenerating(false);
   };
+
+  useEffect(() => {
+    return () => {
+      resetLocalFormState();
+    };
+  }, []);
 
   const handleNextStep = (data?: {
     selectedPalette: {
@@ -128,12 +115,31 @@ export default function CreateProject({
           graphicDescription: data.graphicDescription,
         },
       });
+      console.log("Guardando datos de diseño en brandIdentityStore:", {
+        colorPalette: {
+          selectedPalette: data.selectedPalette,
+          typography: data.typography,
+          graphicDescription: data.graphicDescription,
+        },
+      });
     }
     setCurrentStep((prev) => prev + 1);
   };
 
   const handlePreviousStep = () => {
     setCurrentStep((prev) => prev - 1);
+  };
+
+  const handleGenerateIdentity = () => {
+    console.log("Iniciando generación de identidad...");
+    setIsGenerating(true);
+    setIsModalOpen(false);
+  };
+
+  const handleLoaderComplete = () => {
+    console.log("Loader completado, redirigiendo...");
+    setIsGenerating(false);
+    navigate("/dashboard/preview");
   };
 
   const submitForm = () => {
@@ -159,33 +165,33 @@ export default function CreateProject({
       mockupImage: "https://via.placeholder.com/800x600",
     };
 
+    console.log("Creating project with brandName:", brandIdentity.brandName);
+    console.log("Full brandIdentity data:", brandIdentity);
+
     addProject(project);
     setProjectDetails(project);
-    resetForm();
+
+    setCurrentStep(1);
+    setIsModalOpen(false);
+    setIsGenerating(false);
+
     navigate(`/dashboard/projects/${project.id}`);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (currentStep === 3) {
-      setIsGenerating(true);
-      setTimeout(() => {
-        submitForm();
-        setIsGenerating(false);
-      }, 15000);
+
+    if (currentStep === 1) {
+      console.log(
+        "Guardando datos del formulario en brandIdentityStore:",
+        brandIdentity
+      );
+      handleNextStep();
+    } else if (currentStep === 3) {
+      handleGenerateIdentity();
     } else {
       handleNextStep();
     }
-  };
-
-  const handleGenerateIdentity = () => {
-    setIsGenerating(true);
-    setIsModalOpen(false);
-    setTimeout(() => {
-      setIsGenerating(false);
-      resetForm();
-      navigate("/dashboard/preview");
-    }, 15000);
   };
 
   if (currentStep === 1) {
@@ -298,7 +304,7 @@ export default function CreateProject({
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-2">
+              <div className="flex justify-end space-x-2 mt-6">
                 <Button type="submit">Continue</Button>
               </div>
             </div>
@@ -479,14 +485,15 @@ export default function CreateProject({
               <Button
                 variant="outline"
                 onClick={handlePreviousStep}
-                className="px-6 py-3 border-2 "
+                className="px-6 py-3 border-2"
+                disabled={isGenerating}
               >
                 Go Back
               </Button>
               <Button
                 onClick={handleGenerateIdentity}
                 disabled={isGenerating}
-                className="px-6 py-3  bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all"
+                className="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all"
               >
                 {isGenerating ? (
                   <span className="flex items-center">
@@ -520,7 +527,9 @@ export default function CreateProject({
           </motion.div>
         </motion.div>
         {isGenerating && (
-          <BrandIdentityLoader onComplete={() => setIsGenerating(false)} />
+          <div className="fixed inset-0 z-[9999] bg-black bg-opacity-50 backdrop-blur-sm">
+            <BrandIdentityLoader onComplete={handleLoaderComplete} />
+          </div>
         )}
         <motion.div
           initial={{ opacity: 0 }}
