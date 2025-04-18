@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "../../components/ui/card";
 
 const loadingMessages = [
@@ -9,33 +9,39 @@ const loadingMessages = [
   "Generating consistent graphics...",
   "Creating a consistent visual identity...",
   "Optimizing visual experience...",
-  "Generating final graphic identity..."
+  "Generating final graphic identity...",
 ];
 
 const BrandIdentityLoader = ({ onComplete }: { onComplete: () => void }) => {
   const [currentMessage, setCurrentMessage] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(true);
 
   useEffect(() => {
     const timePerMessage = Math.floor(15000 / loadingMessages.length);
-    
-    const timer = setTimeout(() => {
+    let messageTimer: NodeJS.Timeout;
+    let completionTimer: NodeJS.Timeout;
+
+    const updateMessage = () => {
       setCurrentMessage((prev) => {
-        const next = (prev + 1) % loadingMessages.length;
+        const next = prev + 1;
+        if (next >= loadingMessages.length) {
+          clearInterval(messageTimer);
+          return prev;
+        }
         return next;
       });
-    }, timePerMessage);
+    };
 
-    const progressTimer = setTimeout(() => {
-      setIsAnimating(false);
+    messageTimer = setInterval(updateMessage, timePerMessage);
+    completionTimer = setTimeout(() => {
+      clearInterval(messageTimer);
       onComplete();
     }, 15000);
 
     return () => {
-      clearTimeout(timer);
-      clearTimeout(progressTimer);
+      clearInterval(messageTimer);
+      clearTimeout(completionTimer);
     };
-  }, [currentMessage, onComplete]);
+  }, [onComplete]);
 
   return (
     <div className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4">
@@ -77,12 +83,12 @@ const BrandIdentityLoader = ({ onComplete }: { onComplete: () => void }) => {
           <motion.div
             animate={{
               scale: [1, 1.1, 1],
-              rotate: [0, 360, 0]
+              rotate: [0, 360, 0],
             }}
             transition={{
               duration: 2,
               repeat: Infinity,
-              ease: "linear"
+              ease: "linear",
             }}
             className="w-12 h-12 bg-orange-500 rounded-full"
           />

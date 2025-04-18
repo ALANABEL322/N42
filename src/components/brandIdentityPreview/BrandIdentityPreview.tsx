@@ -5,6 +5,7 @@ import { DefaultFontPreloader } from "@/components/FontPreloader";
 import { useBrandPreviewStore } from "../../store/brandPreviewStore";
 import { useProjectsStore } from "../../store/projectsStore";
 import { useProjectDetailsStore } from "../../store/projectDetailsStore";
+import { useBrandIdentityStore } from "../../store/brandIdentityStore";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { fetchBrandingTemplates } from "@/lib/template";
@@ -38,6 +39,7 @@ interface BrandingTemplate {
 export default function BrandIdentityPreview() {
   const { previewData, setPreviewData, template, setTemplate } =
     useBrandPreviewStore();
+  const { brandIdentity } = useBrandIdentityStore();
   const addProject = useProjectsStore((state) => state.addProject);
   const setProjectDetails = useProjectDetailsStore(
     (state) => state.setProjectDetails
@@ -72,16 +74,17 @@ export default function BrandIdentityPreview() {
     setPreviewData({
       ...previewData,
       selectedTemplate: template.id,
-      brandName: template.brandName,
-      slogan: template.slogan,
+      brandName: brandIdentity.brandName || template.brandName,
+      slogan: brandIdentity.slogan || template.slogan,
       colorPalette: template.colorPalette,
       typography: {
-        fontFamily: template.typography.fontFamily || "",
         name: template.typography.name,
+        fontFamily: template.typography.fontFamily || "",
         googleFontLink: template.typography.googleFontLink,
         weights: template.typography.weights,
         sampleText:
-          template.description || "Ejemplo de texto para mostrar la tipografía",
+          template.typography.sampleText ||
+          "Ejemplo de texto para mostrar la tipografía",
       },
       mockupImages: template.mockupImages,
       selectedImage: template.mockupImages[0],
@@ -91,7 +94,6 @@ export default function BrandIdentityPreview() {
   const handleSaveProject = () => {
     if (
       !previewData.selectedTemplate ||
-      !previewData.brandName ||
       !previewData.selectedImage ||
       !selectedTemplate
     ) {
@@ -100,14 +102,20 @@ export default function BrandIdentityPreview() {
 
     const project = {
       id: Date.now().toString(),
-      title: selectedTemplate.title,
-      description: selectedTemplate.description,
-      brandName: previewData.brandName,
-      slogan: previewData.slogan,
+      title:
+        brandIdentity.brandName ||
+        previewData.brandName ||
+        selectedTemplate.title,
+      description: brandIdentity.mission || selectedTemplate.description,
+      brandName: brandIdentity.brandName || previewData.brandName,
+      slogan: brandIdentity.slogan || previewData.slogan,
       colorPalette: previewData.colorPalette,
       typography: previewData.typography,
       mockupImage: previewData.selectedImage,
     };
+
+    console.log("Saving project with brandName:", project.brandName);
+    console.log("Using brandIdentity data:", brandIdentity);
 
     addProject(project);
     setProjectDetails(project);
@@ -227,11 +235,7 @@ export default function BrandIdentityPreview() {
             <Button
               onClick={handleSaveProject}
               className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-md shadow-lg mt-4"
-              disabled={
-                !selectedTemplate ||
-                !previewData.brandName ||
-                !previewData.selectedImage
-              }
+              disabled={!selectedTemplate || !previewData.selectedImage}
             >
               Save Project
             </Button>
